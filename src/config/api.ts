@@ -1,3 +1,3 @@
-export const baseUrl = "http://localhost:8000/api";
+export const baseUrl = "https://musicc-back.vercel.app/api";
 
-export const publicUrl = "http://localhost:8000/";
+export const publicUrl = "https://musicc-back.vercel.app/";
