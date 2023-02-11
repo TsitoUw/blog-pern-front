@@ -1,7 +1,8 @@
-import axios, { InternalAxiosRequestConfig } from "axios";
+import axios from "axios";
 import TokenService from "./TokenService"
 import { baseUrl } from "../config/api";
 
+// instanciate axios with api url and headers
 const instance = axios.create({
   baseURL: baseUrl,
   headers: {
@@ -9,6 +10,7 @@ const instance = axios.create({
   }
 })
 
+// add token on Authorizatiion so we don't have to do it manually each time
 instance.interceptors.request.use(
   (config) => {
     const token = TokenService.getLocalAccessToken();
@@ -22,6 +24,7 @@ instance.interceptors.request.use(
   }
 );
 
+// try getting new Access token when the actual expires
 instance.interceptors.response.use(
   (res) => {
     return res;
@@ -31,7 +34,7 @@ instance.interceptors.response.use(
 
     if (originalConfig.url !== "/auh/signin" && err.response) {
       // Access Token expired
-      if (err.response.status === 401 && !originalConfig._retry) {
+      if (err.response.status === 403 && !originalConfig._retry) {
         originalConfig._retry = true;
 
         try {

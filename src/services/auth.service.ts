@@ -2,16 +2,21 @@ import axios from "./axios";
 import TokenService from "./TokenService";
 
 class AuthService {
-  async signin(email: string, password: string) {
+  async signin(uid: string, password: string) {
     const response = await axios
       .post("/auth/signin", {
-        email,
+        uid,
         password
       });
     if (response.data.accessToken) {
-      TokenService.setUser(response.data);
+      const store = {
+        accessToken:response.data.accessToken,
+        refreshToken: response.data.refreshToken,
+        uid: response.data.user.id
+      }
+      TokenService.setUser(store);
     }
-    return response.data;
+    return response;
   }
 
   signout() {
@@ -23,6 +28,19 @@ class AuthService {
         TokenService.removeUser();
       })
       .catch((err) => {
+        console.log(err)
+      })
+  }
+
+  test() {
+    axios
+      .post("/auth/test", {
+        token: TokenService.getLocalRefreshToken(),
+      })
+      .then((res)=>{
+        console.log(res)
+      })
+      .catch(err=>{
         console.log(err)
       })
   }

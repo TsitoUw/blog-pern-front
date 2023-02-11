@@ -1,10 +1,28 @@
-export interface UserAttributes {
+export default interface UserAttributes {
+  id: string;
+  name:string;
+  artistname:string;
+  username:string;
+  photo?:string;
   email: string;
-  password: string;
+}
+
+export interface Signin {
+  email:string;
+  password:string;
+}
+export interface Signup {
+  name?:string;
+  artistname:string;
+  username:string;
+  photo?:string;
+  email:string;
+  password:string;
+  passwordConfirmation: string;
 }
 
 export interface UserSessionAttributes {
-  id: string;
+  uid: string;
   accessToken: string;
   refreshToken: string;
 }

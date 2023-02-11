@@ -1,10 +1,13 @@
-import React from 'react'
+import { Link } from "react-router-dom"
 
-type Props = {}
-
-const NotFound = (props: Props) => {
+const NotFound = () => {
   return (
-    <div>404 error: Page Not Found</div>
+    <div className="w-screen h-screen flex justify-center items-center">
+      <div className="flex flex-col items-center">
+        <p>404 error: Page Requested Not Found</p>
+        <p>return <Link to="/">home</Link></p>
+      </div>
+    </div>
   )
 }
 

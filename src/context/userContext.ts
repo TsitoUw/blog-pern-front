@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, createContext } from "react"
-import { UserAttributes } from "../types/User"
+import UserAttributes  from "../types/User"
 
 export const UserContext = createContext<{
   currentUser:UserAttributes|null,
