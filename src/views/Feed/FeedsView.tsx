@@ -16,7 +16,7 @@ const FeedsView = () => {
   }
   return (
     <div>
-      <Link to="/login"> login</Link>
+      <Link to="/signin"> login</Link>
       <button onClick={signout}> logout </button>
       <button onClick={test}> test </button>
     </div>
