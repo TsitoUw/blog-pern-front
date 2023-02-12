@@ -11,9 +11,14 @@ import FeedsView from "./views/Feed/FeedsView";
 import SignupView from "./views/Signup/SignupView";
 import tokenService from "./services/TokenService";
 import userService from "./services/user.service";
+import { SongContext } from "./context/songContext";
+import { SongAttributes } from "./types/Audio";
+import { publicUrl } from "./config/api";
 
 function App() {
   const [currentUser, setCurrentUser] = useState<UserAttributes | null>(null);
+  const [currentSong, setCurrentSong] = useState<SongAttributes | null>(null);
+
   // get user on reload
   async function getThisUser(){
     const uid = tokenService.getUser()?.uid;
@@ -25,11 +30,17 @@ function App() {
   }
 
   useEffect(()=>{
+    setCurrentSong({
+      artist:"Some one aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      title:"Lofi",
+      url:publicUrl+"someSong"
+    });
     getThisUser();
   },[]);
   
   return (
     <UserContext.Provider value={{ currentUser, setCurrentUser }}>
+      <SongContext.Provider value={{currentSong, setCurrentSong}}>
       <Router>
         <Routes>
           <Route path="/signup" element={<ProtectedRoute child={<SignupView />} reversed={true}/>} />
@@ -41,6 +52,7 @@ function App() {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
+      </SongContext.Provider>
     </UserContext.Provider>
   );
 }

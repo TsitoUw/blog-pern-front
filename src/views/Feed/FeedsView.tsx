@@ -15,10 +15,12 @@ const FeedsView = () => {
     authService.test();
   }
   return (
-    <div>
+    <div className='flex flex-col'>
+      {user?.currentUser && <p>Welcome {user?.currentUser?.artistname}</p>}
       <Link to="/signin"> login</Link>
       <button onClick={signout}> logout </button>
       <button onClick={test}> test </button>
+      
     </div>
   )
 }
