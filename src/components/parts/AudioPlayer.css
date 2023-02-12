@@ -2,6 +2,7 @@
   margin: 10px;
   position: absolute;
   bottom: 0;
+<<<<<<< HEAD
   padding-bottom: 35px;
   display: none;
 }
@@ -11,11 +12,20 @@
   rotate:-90deg;
   margin-bottom: 40%;
   height: 40%;
+=======
+  padding-bottom: 30px;
+  display: none;
+}
+.volume-container .volume .input-container .volume-slider{
+  -webkit-appearance: slider-vertical;
+  appearance: slider-verical;
+>>>>>>> a715526 (audio player layout/ basic functionality)
 }
 
 .volume-container .volume:hover .input-container {
   display: flex;
 }
+<<<<<<< HEAD
 
 /*******************************/
 
@@ -82,3 +92,5 @@ input[type="range"]:hover::-webkit-slider-thumb{
   opacity: 1;
   transition: 0.2;
 }
+=======
+>>>>>>> a715526 (audio player layout/ basic functionality)
