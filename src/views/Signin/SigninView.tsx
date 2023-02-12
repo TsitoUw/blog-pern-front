@@ -22,7 +22,7 @@ const SigninView = () => {
 
   return (
     <div className="login | h-screen flex justify-center items-center">
-      <ReturnBtn/>
+      <ReturnBtn to="/welcome"/>
       <div className="card-container">
         <div className="card-title">
           Sign in
