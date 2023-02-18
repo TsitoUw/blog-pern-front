@@ -42,7 +42,7 @@ function App() {
   }, []);
 
   return (
-    !isLoading && (
+    !isLoading ? <div className="">Loading...</div> : (
       <UserContext.Provider value={{ currentUser, setCurrentUser }}>
         <SongContext.Provider value={{ currentSong, setCurrentSong }}>
           <Router>
