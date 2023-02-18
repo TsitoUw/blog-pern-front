@@ -3,6 +3,7 @@
   position: absolute;
   bottom: 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
   padding-bottom: 35px;
   display: none;
 }
@@ -20,12 +21,26 @@
   -webkit-appearance: slider-vertical;
   appearance: slider-verical;
 >>>>>>> a715526 (audio player layout/ basic functionality)
+=======
+  padding-bottom: 35px;
+  display: none;
+}
+.volume-container .volume .input-container .volume-slider {
+  background: none;
+  background-color: transparent;
+  rotate:-90deg;
+  margin-bottom: 40%;
+  height: 40%;
+>>>>>>> 401ef41 (upload still loading data to ram)
 }
 
 .volume-container .volume:hover .input-container {
   display: flex;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 401ef41 (upload still loading data to ram)
 
 /*******************************/
 
@@ -91,6 +106,10 @@ input[type="range"]::-webkit-slider-thumb {
 input[type="range"]:hover::-webkit-slider-thumb{
   opacity: 1;
   transition: 0.2;
+<<<<<<< HEAD
 }
 =======
 >>>>>>> a715526 (audio player layout/ basic functionality)
+=======
+}
+>>>>>>> 401ef41 (upload still loading data to ram)
