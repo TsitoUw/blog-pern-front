@@ -41,7 +41,11 @@ function App() {
     getThisUser();
   }, []);
 
+<<<<<<< HEAD
   return (
+=======
+  return ( (
+>>>>>>> 97defbb (fixing app.tsx)
       <UserContext.Provider value={{ currentUser, setCurrentUser }}>
         <SongContext.Provider value={{ currentSong, setCurrentSong }}>
           <Router>
