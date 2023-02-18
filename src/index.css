@@ -3,24 +3,26 @@
 @tailwind utilities;
 
 body {
-  min-width: 100vw;
-  min-height: 100vh;
-  @apply bg-slate-800 text-white font-sans
+  @apply bg-slate-800 text-white font-sans scroll-smooth; 
 }
 
 .card-container {
-  @apply bg-slate-900 p-2;
+  @apply bg-slate-900 p-2 rounded-sm;
 }
 
 .card-container .card-title {
   @apply m-1 font-medium text-xl;
 }
 .card-container .card-content {
-  @apply flex flex-col justify-center
+  @apply flex flex-col justify-center items-center;
 }
 
 .input-text {
-  @apply m-1 p-2 bg-slate-800;
+  @apply w-full m-1 p-2 bg-slate-800;
+}
+
+.input-text.nobg {
+  @apply bg-transparent;
 }
 
 input {
@@ -28,13 +30,31 @@ input {
 }
 
 .button-main {
-  @apply m-1 p-2 bg-amber-600;
+  @apply w-full my-1 p-2 bg-rose-700 rounded-sm;
+}
+
+.button-main.disabled,
+.button-main:hover.disabled{
+  @apply bg-rose-900 text-gray-400 cursor-default;
 }
 
 .button-main:hover {
-  @apply bg-amber-500;
+  @apply bg-rose-500;
+}
+
+.button-secondary {
+  @apply w-full my-1 p-2 border-2 border-rose-500 rounded-sm;
+}
+
+.button-secondary.disabled,
+.button-secondary:hover.disabled{
+  @apply bg-rose-900 text-rose-400 cursor-default;
+}
+
+.button-secondary:hover {
+  @apply bg-rose-500 text-white;
 }
 
 a {
-  @apply text-amber-500;
+  @apply text-rose-500;
 }

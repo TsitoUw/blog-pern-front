@@ -5,13 +5,16 @@ import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import PauseIcon from "@mui/icons-material/Pause";
 import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import VolumeOffIcon from "@mui/icons-material/VolumeOff";
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import SkipNextIcon from '@mui/icons-material/SkipNext';
-import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
-import ShuffleIcon from '@mui/icons-material/Shuffle';
-import RepeatOneIcon from '@mui/icons-material/RepeatOne';
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import SkipNextIcon from "@mui/icons-material/SkipNext";
+import SkipPreviousIcon from "@mui/icons-material/SkipPrevious";
+import ShuffleIcon from "@mui/icons-material/Shuffle";
+import RepeatOneIcon from "@mui/icons-material/RepeatOne";
 
 import "./AudioPlayer.css";
+import { SongAttributes } from "../../types/Audio";
+
 type Props = {
   className: string;
 };
@@ -20,6 +23,9 @@ const AudioPlayer = ({ className }: Props) => {
   const song = useContext(SongContext);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMute, setIsMute] = useState(false);
+  const [isLooping, setIsLooping] = useState(false);
+  const [isShuffling, setIsShuffling] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(false);
   const [seek, setSeek] = useState(0);
   const [seekMax, setSeekMax] = useState(100);
   const [volume, setVolume] = useState(100);
@@ -27,9 +33,30 @@ const AudioPlayer = ({ className }: Props) => {
   const [durationTime, setDurationTime] = useState("0:00");
 
   const audioRef = useRef<HTMLAudioElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const [index, setIndex] = useState(0);
+  let i = 0;
+  const songList = [
+    {
+      artist: "AnomaLies x Kurapika",
+      title: "Psycho",
+      url: publicUrl + "someSong/2471676226772517.mp3",
+    },
+    {
+      artist: "Tove lo",
+      title: "Habits",
+      url: publicUrl + "someSong/6041676222653564.mp3",
+    },
+    {
+      artist: "Idk",
+      title: "Some lofi",
+      url: publicUrl + "someSong/music.mp3",
+    },
+  ];
 
   function playPause() {
-    !isPlaying ? audioRef.current?.play() : audioRef.current?.pause();
+    audioRef.current && !isPlaying ? audioRef.current?.play() : audioRef.current?.pause();
     setIsPlaying((prev) => !prev);
   }
 
@@ -37,6 +64,45 @@ const AudioPlayer = ({ className }: Props) => {
     setIsMute((prev) => !prev);
   }
 
+  function loopUnloop() {
+    setIsLooping((prev) => !prev);
+  }
+
+  function shuffleUnshuffle() {
+    setIsShuffling((prev) => !prev);
+  }
+
+  function favoriteUnfavorite() {
+    setIsFavorite((prev) => !prev);
+  }
+  function prevSong() {
+    if (songList.length > 0 && index > 0) {
+      setIndex((i) => i - 1);
+      i--;
+      console.log(index, i);
+
+      audioRef.current?.pause();
+      setIsPlaying(false);
+      song?.setCurrentSong(songList[index] as SongAttributes);
+      
+      if(audioRef.current) audioRef.current.autoplay = true;
+      setIsPlaying(true);
+    }
+  }
+  function nextSong() {
+    if (songList.length > 0 && index < songList.length) {
+      setIndex((i) => i + 1);
+      i++;
+      console.log(index,i);
+      audioRef.current?.pause();
+      setIsPlaying(false);
+      song?.setCurrentSong(songList[index] as SongAttributes);
+      
+      if(audioRef.current) audioRef.current.autoplay = true;
+      setIsPlaying(true);
+    }
+  }
+  /** */
   function calclulateTime(secs: number) {
     const minutes = Math.floor(secs / 60);
     const seconds = Math.floor(secs % 60);
@@ -56,6 +122,11 @@ const AudioPlayer = ({ className }: Props) => {
       setCurrentTime(calclulateTime(audioRef.current.currentTime));
       setSeek(audioRef.current.currentTime);
     }
+    if (containerRef.current) {
+      containerRef.current.style.setProperty("--seek-before-width", (seek / seekMax) * 100 + "%");
+    }
+
+    if(audioRef.current?.ended && !isLooping) nextSong();
   }
 
   function audioSeek(value: number) {
@@ -64,6 +135,8 @@ const AudioPlayer = ({ className }: Props) => {
   }
 
   function changeVolume(value: number) {
+    if (containerRef.current)
+      containerRef.current.style.setProperty("--volume-before-width", (value / 100) * 100 + "%");
     if (audioRef.current) audioRef.current.volume = value / 100;
     setVolume(value);
   }
@@ -72,6 +145,11 @@ const AudioPlayer = ({ className }: Props) => {
     if (volume == 0) setIsMute(true);
     else setIsMute(false);
   }, [volume]);
+
+  useEffect(()=>{
+    if (containerRef.current)
+      containerRef.current.style.setProperty("--volume-before-width", (volume / 100) * 100 + "%");
+  },[])
 
   if ("mediaSession" in navigator) {
     navigator.mediaSession.metadata = new MediaMetadata({
@@ -110,34 +188,57 @@ const AudioPlayer = ({ className }: Props) => {
         },
       ],
     });
+    navigator.mediaSession.setActionHandler("pause", () => {
+      audioRef.current && audioRef.current?.pause();
+      setIsPlaying(false);
+    });
+    navigator.mediaSession.setActionHandler("play", () => {
+      audioRef.current && audioRef.current?.play();
+      setIsPlaying(true);
+    });
   }
 
   return (
-    <div className={`player-container | z-0 flex w-full bg-slate-900 p-4 md:p-1 ${className}`}>
-      <audio
-        className="hidden"
-        preload="metadata"
-        controls
-        src={song?.currentSong?.url}
-        ref={audioRef}
-        onLoadedMetadata={displayInfo}
-        onTimeUpdate={audioProgress}
-        onPlay={() => setIsPlaying(true)}
-        onPause={() => setIsPlaying(false)}
-        muted={isMute}
-      />
-      <div className="action flex justify-evenly items-center w-1/12 md:w-2/12">
-        <button className="hidden md:flex" onClick={playPause}><SkipPreviousIcon/></button>
-        <button className="flex text-3xl" onClick={playPause}>{isPlaying ? <PauseIcon fontSize="inherit"/> : <PlayArrowIcon fontSize="inherit"/>}</button>
-        <button className="hidden md:flex" onClick={playPause}><SkipNextIcon/></button>
-        <button className="hidden lg:flex" onClick={playPause}><ShuffleIcon/></button>
-        <button className="hidden lg:flex"onClick={playPause}><RepeatOneIcon/></button>
-      </div>
-      <div className="duration flex w-10/12 md:w-8/12">
-        <div id="current-time" className="w-2/12 lg:w-1/12 flex items-center justify-center text-sm">
-          {currentTime}
+    <div
+      className={`player-container | z-0 flex w-full justify-center bg-slate-900 backdrop-blur-md bg-opacity-80 p-2 md:p-1 ${className}`}
+      ref={containerRef}
+    >
+      <div className="flex w-full md:w-11/12">
+        <audio
+          className="hidden"
+          preload="metadata"
+          controls
+          src={song?.currentSong?.url}
+          ref={audioRef}
+          onLoadedMetadata={displayInfo}
+          onTimeUpdate={audioProgress}
+          onPlay={() => setIsPlaying(true)}
+          onPause={() => setIsPlaying(false)}
+          muted={isMute}
+          loop={isLooping}
+        />
+        <div className="action flex justify-evenly items-center w-1/12 md:w-2/12">
+          <button className="hidden md:flex text-neutral-300" onClick={prevSong}>
+            <SkipPreviousIcon />
+          </button>
+          <button className="flex text-3xl text-neutral-300" onClick={playPause}>
+            {isPlaying ? <PauseIcon fontSize="inherit" /> : <PlayArrowIcon fontSize="inherit" />}
+          </button>
+          <button className="hidden md:flex" onClick={nextSong}>
+            <SkipNextIcon />
+          </button>
+          <button className="hidden lg:flex" onClick={shuffleUnshuffle}>
+            <ShuffleIcon className={isShuffling ? "text-rose-600" : "text-neutral-300"} />
+          </button>
+          <button className="hidden lg:flex" onClick={loopUnloop}>
+            <RepeatOneIcon className={isLooping ? "text-rose-600" : "text-neutral-300"} />
+          </button>
         </div>
-        <input
+        <div className="duration hidden md:flex w-10/12 md:w-6/12 lg:w-9/12">
+          <div id="current-time" className="w-2/12 lg:w-1/12 flex items-center justify-center text-sm">
+            {currentTime}
+          </div>
+          <input
             type="range"
             name="seek-slider"
             id="seek-slider"
@@ -148,43 +249,52 @@ const AudioPlayer = ({ className }: Props) => {
             }}
             max={seekMax}
           />
-          
-        <div id="duration-time" className="w-2/12 lg:w-1/12 flex items-center justify-center text-sm">
-          {durationTime}
+
+          <div id="duration-time" className="w-2/12 lg:w-1/12 flex items-center justify-center text-sm">
+            {durationTime}
+          </div>
         </div>
-      </div>
-      <div className="volume-container hidden lg:flex w-1/12 relative  items-center justify-center">
-        <div className="volume flex relative items-center justify-center">
-          <div className="input-container">
-            <input
-              aria-orientation="vertical"
-              type="range"
-              name="volume-slider"
-              className="volume-slider"
-              value={volume}
-              onInput={(e) => {
-                changeVolume(Number(e.currentTarget.value));
-              }}
-              max="100"
+        <div className="volume-container hidden lg:flex w-10 relative  items-center justify-center">
+          <div className="volume flex relative items-center justify-center">
+            <div className="input-container ">
+              <input
+                type="range"
+                name="volume-slider"
+                className="volume-slider"
+                value={volume}
+                onInput={(e) => {
+                  changeVolume(Number(e.currentTarget.value));
+                }}
+                max="100"
+              />
+            </div>
+            <button className="volume-btn text-neutral-300 flex items-center justify-center" onClick={muteUnmute}>
+              {!isMute ? <VolumeUpIcon fontSize="small"/> : <VolumeOffIcon fontSize="small"/>}
+            </button>
+          </div>
+        </div>
+
+        <div className="info w-full md:w-4/12 lg:w-3/12 flex">
+          <div className="artwork hidden w-10 lg:flex items-center justify-center">
+            <img
+              src={publicUrl + "artworks/sary.png"}
+              className="w-full aspect-square object-cover rounded-sm"
             />
           </div>
-          <button className="volume-btn" onClick={muteUnmute}>
-            {!isMute ? <VolumeUpIcon /> : <VolumeOffIcon />}
+          <div className="about  md:flex w-4/5 lg:w-8/12 flex-col p-1 px-3 justify-evenly">
+            <div className="artist text-sm overflow-hidden whitespace-nowrap truncate text-neutral-300">
+              {song?.currentSong?.artist}
+            </div>
+            <div className="title overflow-hidden whitespace-nowrap truncate">{song?.currentSong?.title}</div>
+          </div>
+          <button className="action w-1/5 md:w-max flex items-center justify-center" onClick={favoriteUnfavorite}>
+            {isFavorite ? (
+              <FavoriteIcon className="mx-2 text-rose-600" />
+            ) : (
+              <FavoriteBorderIcon className="mx-2 text-neutral-300" />
+            )}
           </button>
         </div>
-      </div>
-
-      <div className="info w-1/12 md:w-4/12 flex">
-        <div className="artwork hidden lg:w-1/5 lg:flex p-2 items-center justify-center">
-          <img src={publicUrl+"artworks/sary.png"} className="w-2/5 aspect-square object-cover" alt=""/>
-        </div>
-        <div className="about hidden md:flex w-4/5 lg:w-3/5 flex-col p-1 justify-evenly">
-          <div className="artist text-sm overflow-hidden whitespace-nowrap truncate">{song?.currentSong?.artist}</div>
-          <div className="title overflow-hidden whitespace-nowrap truncate">{song?.currentSong?.title}</div>
-        </div>
-        <button className="action w-full md:w-1/5 flex items-center justify-center">
-          <FavoriteBorderIcon />
-        </button>
       </div>
     </div>
   );

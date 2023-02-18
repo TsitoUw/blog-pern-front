@@ -18,6 +18,7 @@ const FeedsView = () => {
     <div className='flex flex-col'>
       {user?.currentUser && <p>Welcome {user?.currentUser?.artistname}</p>}
       <Link to="/signin"> login</Link>
+      <Link to="/uaaa/upload"> upload</Link>
       <button onClick={signout}> logout </button>
       <button onClick={test}> test </button>
       
