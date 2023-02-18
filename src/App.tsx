@@ -41,8 +41,7 @@ function App() {
     getThisUser();
   }, []);
 
-  return (
-    !isLoading ? <div className="">Loading...</div> : (
+  return ( (
       <UserContext.Provider value={{ currentUser, setCurrentUser }}>
         <SongContext.Provider value={{ currentSong, setCurrentSong }}>
           <Router>
