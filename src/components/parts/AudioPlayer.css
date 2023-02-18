@@ -2,14 +2,83 @@
   margin: 10px;
   position: absolute;
   bottom: 0;
-  padding-bottom: 30px;
+  padding-bottom: 35px;
   display: none;
 }
-.volume-container .volume .input-container .volume-slider{
-  -webkit-appearance: slider-vertical;
-  appearance: slider-verical;
+.volume-container .volume .input-container .volume-slider {
+  background: none;
+  background-color: transparent;
+  rotate:-90deg;
+  margin-bottom: 40%;
+  height: 40%;
 }
 
 .volume-container .volume:hover .input-container {
   display: flex;
+}
+
+/*******************************/
+
+input[type="range"] {
+  position: relative;
+  appearance: none;
+  -webkit-appearance: none;
+  outline: none;
+  border: none;
+  background-color: transparent;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 3px;
+  cursor: pointer;
+  @apply bg-neutral-400
+}
+
+
+input[type="range"]::before {
+  position: absolute;
+  content: "";
+  left: 0;
+  width: var(--seek-before-width);
+  height: 3px;
+  cursor: pointer;
+  top: 13.5px;
+
+  @apply bg-rose-500;
+}
+
+@media (min-width:768px) {
+  input[type="range"]::before {
+    top: 25px;
+  }
+}
+
+.volume-container .volume .input-container .volume-slider::before {
+  top:0;
+  width: var(--volume-before-width);
+}
+
+.volume-container .volume .input-container .volume-slider::-webkit-slider-thumb {
+  margin: -5px 0 0 0;
+}
+
+
+input[type="range"]::-webkit-slider-thumb {
+  opacity: 0;
+  position: relative;
+  -webkit-appearance: none;
+  box-sizing: content-box;
+  height: 12px;
+  width: 12px;
+  border-radius: 50%;
+  cursor: pointer;
+  margin: -5px -5px -5px -5px;
+  @apply bg-rose-500;
+  transition: 0.2s;
+}
+
+
+input[type="range"]:hover::-webkit-slider-thumb{
+  opacity: 1;
+  transition: 0.2;
 }
