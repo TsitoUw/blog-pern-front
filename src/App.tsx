@@ -42,7 +42,6 @@ function App() {
   }, []);
 
   return (
-    !isLoading && (
       <UserContext.Provider value={{ currentUser, setCurrentUser }}>
         <SongContext.Provider value={{ currentSong, setCurrentSong }}>
           <Router>
@@ -69,7 +68,6 @@ function App() {
           </Router>
         </SongContext.Provider>
       </UserContext.Provider>
-    )
   );
 }
 
