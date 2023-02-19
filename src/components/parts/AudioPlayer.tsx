@@ -7,8 +7,11 @@ import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import VolumeOffIcon from "@mui/icons-material/VolumeOff";
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 401ef41 (upload still loading data to ram)
+=======
+>>>>>>> 97defbb40556c15c8abfae11ff0599d8b1ecd9e2
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import SkipNextIcon from "@mui/icons-material/SkipNext";
@@ -16,10 +19,14 @@ import SkipPreviousIcon from "@mui/icons-material/SkipPrevious";
 import ShuffleIcon from "@mui/icons-material/Shuffle";
 import RepeatOneIcon from "@mui/icons-material/RepeatOne";
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 97defbb40556c15c8abfae11ff0599d8b1ecd9e2
 
 import "./AudioPlayer.css";
 import { SongAttributes } from "../../types/Audio";
 
+<<<<<<< HEAD
 =======
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import SkipNextIcon from '@mui/icons-material/SkipNext';
@@ -35,6 +42,8 @@ import "./AudioPlayer.css";
 import { SongAttributes } from "../../types/Audio";
 
 >>>>>>> 401ef41 (upload still loading data to ram)
+=======
+>>>>>>> 97defbb40556c15c8abfae11ff0599d8b1ecd9e2
 type Props = {
   className: string;
 };
@@ -43,6 +52,7 @@ const AudioPlayer = ({ className }: Props) => {
   const song = useContext(SongContext);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMute, setIsMute] = useState(false);
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
   const [isLooping, setIsLooping] = useState(false);
@@ -55,6 +65,11 @@ const AudioPlayer = ({ className }: Props) => {
   const [isShuffling, setIsShuffling] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
 >>>>>>> 401ef41 (upload still loading data to ram)
+=======
+  const [isLooping, setIsLooping] = useState(false);
+  const [isShuffling, setIsShuffling] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(false);
+>>>>>>> 97defbb40556c15c8abfae11ff0599d8b1ecd9e2
   const [seek, setSeek] = useState(0);
   const [seekMax, setSeekMax] = useState(100);
   const [volume, setVolume] = useState(100);
@@ -64,8 +79,11 @@ const AudioPlayer = ({ className }: Props) => {
   const audioRef = useRef<HTMLAudioElement>(null);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 401ef41 (upload still loading data to ram)
+=======
+>>>>>>> 97defbb40556c15c8abfae11ff0599d8b1ecd9e2
   const containerRef = useRef<HTMLDivElement>(null);
 
   const [index, setIndex] = useState(0);
@@ -88,6 +106,7 @@ const AudioPlayer = ({ className }: Props) => {
     },
   ];
 <<<<<<< HEAD
+<<<<<<< HEAD
 
   function playPause() {
     audioRef.current && !isPlaying ? audioRef.current?.play() : audioRef.current?.pause();
@@ -101,6 +120,11 @@ const AudioPlayer = ({ className }: Props) => {
   function playPause() {
     audioRef.current && !isPlaying ? audioRef.current?.play() : audioRef.current?.pause();
 >>>>>>> 401ef41 (upload still loading data to ram)
+=======
+
+  function playPause() {
+    audioRef.current && !isPlaying ? audioRef.current?.play() : audioRef.current?.pause();
+>>>>>>> 97defbb40556c15c8abfae11ff0599d8b1ecd9e2
     setIsPlaying((prev) => !prev);
   }
 
@@ -110,8 +134,11 @@ const AudioPlayer = ({ className }: Props) => {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 401ef41 (upload still loading data to ram)
+=======
+>>>>>>> 97defbb40556c15c8abfae11ff0599d8b1ecd9e2
   function loopUnloop() {
     setIsLooping((prev) => !prev);
   }
@@ -152,10 +179,13 @@ const AudioPlayer = ({ className }: Props) => {
   }
   /** */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> a715526 (audio player layout/ basic functionality)
 =======
 >>>>>>> 401ef41 (upload still loading data to ram)
+=======
+>>>>>>> 97defbb40556c15c8abfae11ff0599d8b1ecd9e2
   function calclulateTime(secs: number) {
     const minutes = Math.floor(secs / 60);
     const seconds = Math.floor(secs % 60);
@@ -177,18 +207,24 @@ const AudioPlayer = ({ className }: Props) => {
     }
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 401ef41 (upload still loading data to ram)
+=======
+>>>>>>> 97defbb40556c15c8abfae11ff0599d8b1ecd9e2
     if (containerRef.current) {
       containerRef.current.style.setProperty("--seek-before-width", (seek / seekMax) * 100 + "%");
     }
 
     if(audioRef.current?.ended && !isLooping) nextSong();
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> a715526 (audio player layout/ basic functionality)
 =======
 >>>>>>> 401ef41 (upload still loading data to ram)
+=======
+>>>>>>> 97defbb40556c15c8abfae11ff0599d8b1ecd9e2
   }
 
   function audioSeek(value: number) {
@@ -199,6 +235,7 @@ const AudioPlayer = ({ className }: Props) => {
   function changeVolume(value: number) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     if (containerRef.current)
       containerRef.current.style.setProperty("--volume-before-width", (value / 100) * 100 + "%");
 =======
@@ -207,6 +244,10 @@ const AudioPlayer = ({ className }: Props) => {
     if (containerRef.current)
       containerRef.current.style.setProperty("--volume-before-width", (value / 100) * 100 + "%");
 >>>>>>> 401ef41 (upload still loading data to ram)
+=======
+    if (containerRef.current)
+      containerRef.current.style.setProperty("--volume-before-width", (value / 100) * 100 + "%");
+>>>>>>> 97defbb40556c15c8abfae11ff0599d8b1ecd9e2
     if (audioRef.current) audioRef.current.volume = value / 100;
     setVolume(value);
   }
@@ -218,18 +259,24 @@ const AudioPlayer = ({ className }: Props) => {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 401ef41 (upload still loading data to ram)
+=======
+>>>>>>> 97defbb40556c15c8abfae11ff0599d8b1ecd9e2
   useEffect(()=>{
     if (containerRef.current)
       containerRef.current.style.setProperty("--volume-before-width", (volume / 100) * 100 + "%");
   },[])
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> a715526 (audio player layout/ basic functionality)
 =======
 >>>>>>> 401ef41 (upload still loading data to ram)
+=======
+>>>>>>> 97defbb40556c15c8abfae11ff0599d8b1ecd9e2
   if ("mediaSession" in navigator) {
     navigator.mediaSession.metadata = new MediaMetadata({
       artist: song?.currentSong?.artist,
@@ -269,8 +316,11 @@ const AudioPlayer = ({ className }: Props) => {
     });
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 401ef41 (upload still loading data to ram)
+=======
+>>>>>>> 97defbb40556c15c8abfae11ff0599d8b1ecd9e2
     navigator.mediaSession.setActionHandler("pause", () => {
       audioRef.current && audioRef.current?.pause();
       setIsPlaying(false);
@@ -280,6 +330,9 @@ const AudioPlayer = ({ className }: Props) => {
       setIsPlaying(true);
     });
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 97defbb40556c15c8abfae11ff0599d8b1ecd9e2
   }
 
   return (
@@ -323,6 +376,7 @@ const AudioPlayer = ({ className }: Props) => {
             {currentTime}
           </div>
           <input
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> 401ef41 (upload still loading data to ram)
@@ -374,6 +428,8 @@ const AudioPlayer = ({ className }: Props) => {
           </div>
           <input
 >>>>>>> 401ef41 (upload still loading data to ram)
+=======
+>>>>>>> 97defbb40556c15c8abfae11ff0599d8b1ecd9e2
             type="range"
             name="seek-slider"
             id="seek-slider"
@@ -386,13 +442,19 @@ const AudioPlayer = ({ className }: Props) => {
           />
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 401ef41 (upload still loading data to ram)
+=======
+>>>>>>> 97defbb40556c15c8abfae11ff0599d8b1ecd9e2
 
           <div id="duration-time" className="w-2/12 lg:w-1/12 flex items-center justify-center text-sm">
             {durationTime}
           </div>
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 97defbb40556c15c8abfae11ff0599d8b1ecd9e2
         </div>
         <div className="volume-container hidden lg:flex w-10 relative  items-center justify-center">
           <div className="volume flex relative items-center justify-center">
@@ -436,6 +498,7 @@ const AudioPlayer = ({ className }: Props) => {
           </button>
         </div>
       </div>
+<<<<<<< HEAD
 =======
           
         <div id="duration-time" className="w-2/12 lg:w-1/12 flex items-center justify-center text-sm">
@@ -502,6 +565,8 @@ const AudioPlayer = ({ className }: Props) => {
 >>>>>>> a715526 (audio player layout/ basic functionality)
 =======
 >>>>>>> 401ef41 (upload still loading data to ram)
+=======
+>>>>>>> 97defbb40556c15c8abfae11ff0599d8b1ecd9e2
     </div>
   );
 };

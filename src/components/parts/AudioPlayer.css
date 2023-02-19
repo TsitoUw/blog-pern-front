@@ -4,6 +4,9 @@
   bottom: 0;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 97defbb40556c15c8abfae11ff0599d8b1ecd9e2
   padding-bottom: 35px;
   display: none;
 }
@@ -13,6 +16,7 @@
   rotate:-90deg;
   margin-bottom: 40%;
   height: 40%;
+<<<<<<< HEAD
 =======
   padding-bottom: 30px;
   display: none;
@@ -32,6 +36,8 @@
   margin-bottom: 40%;
   height: 40%;
 >>>>>>> 401ef41 (upload still loading data to ram)
+=======
+>>>>>>> 97defbb40556c15c8abfae11ff0599d8b1ecd9e2
 }
 
 .volume-container .volume:hover .input-container {
@@ -39,8 +45,11 @@
 }
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 401ef41 (upload still loading data to ram)
+=======
+>>>>>>> 97defbb40556c15c8abfae11ff0599d8b1ecd9e2
 
 /*******************************/
 
@@ -107,9 +116,13 @@ input[type="range"]:hover::-webkit-slider-thumb{
   opacity: 1;
   transition: 0.2;
 <<<<<<< HEAD
+<<<<<<< HEAD
 }
 =======
 >>>>>>> a715526 (audio player layout/ basic functionality)
 =======
 }
 >>>>>>> 401ef41 (upload still loading data to ram)
+=======
+}
+>>>>>>> 97defbb40556c15c8abfae11ff0599d8b1ecd9e2
