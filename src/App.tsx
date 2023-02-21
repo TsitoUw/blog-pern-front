@@ -25,20 +25,20 @@ function App() {
     const uid = tokenService.getUser()?.uid;
     if (uid) {
       try {
-        const user = await userService.getUser(uid);
-        if (user) setCurrentUser(user as unknown as UserAttributes);
+        const data = await userService.getUser(uid);
+        if (data) setCurrentUser(data.data.user as unknown as UserAttributes);
       } catch (err) {}
     }
     setIsLoading(false);
   }
 
   useEffect(() => {
+    getThisUser();
     setCurrentSong({
       artist: "Some one",
       title: "Take this to school, and listen",
       url: publicUrl + "someSong/music.mp3",
     });
-    getThisUser();
   }, []);
 
   return (
@@ -46,19 +46,19 @@ function App() {
         <SongContext.Provider value={{ currentSong, setCurrentSong }}>
           <Router>
             <Routes>
+              <Route path="/welcome" element={<ProtectedRoute reversed={true} />}>
+                <Route path="" element={<HomeView />} />
+              </Route>
               <Route path="/signup" element={<ProtectedRoute reversed={true} />}>
                 <Route path="" element={<SignupView />} />
               </Route>
               <Route path="/signin" element={<ProtectedRoute reversed={true} />}>
                 <Route path="" element={<SigninView />} />
               </Route>
-              <Route path="/welcome" element={<ProtectedRoute reversed={true} />}>
-                <Route path="" element={<HomeView />} />
-              </Route>
 
               <Route path="/" element={<Layout />}>
                 <Route path="" element={<FeedsView />} />
-                <Route path="/:user" element={<ProtectedRoute />}>
+                <Route path="/:user">
                   <Route path="" element={<UploadSongView />} />
                   <Route path="upload" element={<UploadSongView />} />
                 </Route>
