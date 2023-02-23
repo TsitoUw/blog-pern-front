@@ -1,7 +1,6 @@
-import { ChangeEvent, Dispatch, SetStateAction, useContext, useEffect, useRef, useState } from "react";
+import { ChangeEvent, Dispatch, FormEvent, SetStateAction, useContext, useEffect, useRef, useState } from "react";
 import { UserContext } from "../../context/userContext";
 import defaultArtwork from "../../assets/default-artwork.png";
-import Axios from "axios";
 import axios from "../../services/axios";
 
 const UploadSongView = () => {
@@ -14,11 +13,11 @@ const UploadSongView = () => {
   const [imgSrc, setImgSrc] = useState<string>("");
   const [artist, setArtist] = useState(user?.currentUser ? user.currentUser.name : "");
   const [title, setTitle] = useState("");
+  const [releaseDate, setReleaseDate] = useState("");
+  const [dateType, setDateType] = useState<"text" | "date">("text");
+  const [description, setDescription] = useState("");
   const [canUpload, setCanUpload] = useState(false);
   const [isLoadingFile, setIsLoadingFile] = useState(false);
-
-  const [resImageName, setResImageName] = useState("");
-  const [resAudioName, setResAudioName] = useState("");
 
   const [disable, setDisable] = useState(false);
   const inAudioFileRef = useRef<HTMLInputElement>(null);
@@ -40,7 +39,7 @@ const UploadSongView = () => {
         console.log("charging data to memory");
         setIsLoadingFile(true);
         setDisable(true);
-      }
+      };
       reader.onload = () => {
         setData(new Uint8Array(reader.result as ArrayBufferLike));
         setIsLoadingFile(false);
@@ -59,82 +58,99 @@ const UploadSongView = () => {
   };
 
   useEffect(() => {
-    if (title && artist && audioData) setCanUpload(true);
+    if (title !== "" && title.trim() !== "" && artist !== "" && artist.trim() !== "" && audioData !== null)
+      setCanUpload(true);
     else setCanUpload(false);
   }, [title, artist, audioData]);
 
-  function send() {
-    setDisable(true);
-    //uploading audio
-    upload(audioName, audioData, setResAudioName);
-
-    //uploading artwork
-    if (imageName) upload(imageName, imageData, setResImageName);
-
-    setDisable(false);
+  function generateRandomFileName(from: string) {
+    const rand = Math.random().toString(10).slice(15);
+    const date = Date.now().toString();
+    const ext = from.substring(from.lastIndexOf("."));
+    return `${rand}${date}${ext}`;
   }
 
-  async function test() {
-    const rand = Math.floor(Math.random() * 1000);
-    const fname = "" + rand + Date.now().toString() + audioName.substring(audioName.lastIndexOf("."));
+  async function chunkUpload(
+    data: Uint8Array,
+    fileName: string,
+    type: "artwork" | "userpic" | "audio",
+    chunk_sz?: number
+  ) {
+    const fname = generateRandomFileName(fileName);
+    const CHUNK_SIZE = chunk_sz ? 1024 * 1024 * chunk_sz : 1024 * 1024;
+    const chunkLen = data.byteLength;
+    const chunkNumber = Math.ceil(chunkLen / CHUNK_SIZE);
+    let url: string;
+    switch (type) {
+      case "artwork":
+        url = "/songs/artwork/" + fname;
+        break;
+      case "audio":
+        url = "/songs/audio/" + fname;
+        break;
+      case "userpic":
+        url = "/userpic/" + fname;
+        break;
+    }
 
-    const CHUNK_SIZE = 1024 * 1024;
-    const chunkLen = audioData ? audioData.byteLength : 0;
-    const totalChunk = audioData ? Math.ceil(audioData.byteLength / CHUNK_SIZE) : 0;
-    console.log(audioData?.byteLength, CHUNK_SIZE);
     let index = 0;
     let chunkSent = 0;
+
     do {
-      console.log("starting" + chunkSent + "/" + chunkLen);
-      const data = audioData ? audioData.slice(CHUNK_SIZE * index, CHUNK_SIZE * (index + 1)) : 0;
+      const chunkedData = data.slice(CHUNK_SIZE * index, CHUNK_SIZE * ++index);
+      // overall progress
+      console.log(Math.floor((index * 100) / chunkNumber) + "%");
       let result: unknown;
-      await Axios.post("http://localhost:8100/" + fname, data, {
-        onUploadProgress: (p) => {
-          console.log(p.loaded);
-        },
-      })
-        .catch((err) => console.log(err))
+      await axios
+        .post(url, chunkedData, {
+          headers: {
+            "Content-Type": "application/octet-stream",
+          },
+          onUploadProgress(progressEvent) {
+            // handle each chunk progress here
+          },
+        })
         .then((res) => {
           result = res;
         });
       if (!result) break;
-      index++;
       chunkSent += CHUNK_SIZE;
-      console.log(index, chunkSent, totalChunk);
-      console.log("done");
     } while (chunkSent < chunkLen);
-    console.log("upload done");
+
+    return fname;
   }
 
-  function upload(fileName: string, data: Uint8Array | null, setResFileName: Dispatch<SetStateAction<string>>) {
-    const rand = Math.floor(Math.random() * 1000);
-    const fname = "" + rand + Date.now().toString() + fileName.substring(fileName.lastIndexOf("."));
+  async function send(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if(!user?.currentUser?.id) throw new Error("User should be logged")
+    // setDisable(true);
+    if (!audioData) return;
+    console.log("-- uploading audio --");
+    const audioResFilename = await chunkUpload(audioData, audioName, "audio");
+    console.log("-- uploading artwork --");
+    let artworkResFilename = null;
+    if (imageData) artworkResFilename = await chunkUpload(imageData, imageName, "artwork");
 
-    axios.post(
-      "/users/",
-      {},
-      {
-        onUploadProgress: (p) => {
-          console.log("isUploading: " + p);
-        },
-      }
-    );
+    // Sending all text info
+    const songsInformations = {
+      ownerId: user?.currentUser?.id,
+      artist: artist,
+      title: title,
+      filename: audioResFilename,
+      description: description,
+      releaseDate: releaseDate,
+      artwork: artworkResFilename,
+    };
 
-    fetch("http://localhost:8000/api/users/songs/" + fname, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/octet-stream",
-      },
-      body: data,
-    })
+    await axios
+      .post("/songs/", { ...songsInformations })
       .then((res) => {
-        return res.json();
-      })
-      .then((data) => {
-        console.log(data);
+        console.log(res);
+        setDisable(false);
       })
       .catch((err) => {
-        console.error(err);
+        setDisable(false);
+        console.log(err)
       });
   }
 
@@ -142,10 +158,10 @@ const UploadSongView = () => {
     <div className="contain flex justify-center items-center w-full mt-2 md:mt-3">
       <div className="card-container w-full md:w-4/5">
         <div className="card-title">Share your music now</div>
-        <div className="w-full">
+        <form className="w-full" onSubmit={(e) => send(e)}>
           <div className="songs-info flex flex-col-reverse md:flex-row">
             <div className="media flex flex-col items-center justify-center w-full md:w-3/12">
-              <p className="flex w-full items-center justify-start p-2 font-light text-neutral-400">Audio file</p>
+              <p className="flex w-full items-center justify-start p-2 py-5 md:p-2 font-light text-neutral-400">Audio file</p>
               <div className="audio flex w-full">
                 <input
                   type="file"
@@ -154,7 +170,7 @@ const UploadSongView = () => {
                   accept=".mp3,.wav,.m4a,.ogg"
                   onChange={(e) => handleChange(e, setAudioName, setAudioData)}
                   ref={inAudioFileRef}
-                  disabled={disable}
+                  disabled={disable || isLoadingFile}
                 />
                 <div className="flex flex-col w-full">
                   <button
@@ -168,7 +184,7 @@ const UploadSongView = () => {
                   </p>
                 </div>
               </div>
-              <p className="flex w-full items-center justify-start p-2 font-light text-neutral-400">Artwork</p>
+              <p className="flex w-full items-center justify-start p-2 py-5 md:p-2 font-light text-neutral-400">Artwork</p>
               <div className="artwork flex items-center justify-center relative">
                 <input
                   type="file"
@@ -177,7 +193,7 @@ const UploadSongView = () => {
                   accept=".png,.jpeg,.jpg"
                   onChange={(e) => handleChange(e, setImageName, setImageData, setImgSrc)}
                   ref={inImageFileRef}
-                  disabled={disable}
+                  disabled={disable || isLoadingFile}
                 />
                 <div className="artwork flex w-full justify-center items-center">
                   <img
@@ -214,6 +230,10 @@ const UploadSongView = () => {
                   type="text"
                   className="input-text nobg border-b border-rose-600 focus-visible:border-rose-400"
                   placeholder="Song title*"
+                  value={title}
+                  onChange={(e) => {
+                    setTitle(e.target.value);
+                  }}
                 />
               </div>
               <div className="artist flex w-full">
@@ -221,12 +241,40 @@ const UploadSongView = () => {
                   type="text"
                   className="input-text nobg border-b border-rose-600 focus-visible:border-rose-400"
                   placeholder="Artist*"
+                  value={artist}
+                  onChange={(e) => {
+                    setArtist(e.target.value);
+                  }}
                 />
               </div>
               <div className="description flex w-full">
                 <textarea
                   placeholder="Description"
-                  className="input-text nobg border-b w-full border-rose-600 outline-none focus-visible:border-rose-400 resize-none h-[15vh] md:h-[17vw] lg:h-[19vw]"
+                  className="input-text nobg border-b w-full border-rose-600 outline-none focus-visible:border-rose-400 resize-none h-[15vh] md:h-[15vw] lg:h-[15vw]"
+                  value={description}
+                  onChange={(e) => {
+                    setDescription(e.target.value);
+                  }}
+                />
+              </div>
+              <div className="release-date flex w-full">
+                <input
+                  type={dateType}
+                  className="input-text nobg border-b border-rose-600"
+                  onFocus={() => {
+                    setDateType("date");
+                  }}
+                  onBlur={() => {
+                    if (releaseDate !== "") {
+                      setDateType("text");
+                    }
+                  }}
+                  onChange={(e) => {
+                    setReleaseDate(e.target.value);
+                    console.log(releaseDate);
+                  }}
+                  value={releaseDate}
+                  placeholder="Release date"
                 />
               </div>
             </div>
@@ -235,13 +283,12 @@ const UploadSongView = () => {
             <button
               className={canUpload ? "button-main" : "button-main disabled"}
               type="submit"
-              disabled={!canUpload}
-              onClick={send}
+              disabled={!canUpload || disable}
             >
               Upload
             </button>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   );

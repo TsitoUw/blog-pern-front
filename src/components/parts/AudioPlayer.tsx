@@ -1,6 +1,6 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { SongContext } from "../../context/songContext";
-import { publicUrl } from "../../config/api";
+import { baseUrl, publicUrl } from "../../config/api";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import PauseIcon from "@mui/icons-material/Pause";
 import VolumeUpIcon from "@mui/icons-material/VolumeUp";
@@ -11,6 +11,7 @@ import SkipNextIcon from "@mui/icons-material/SkipNext";
 import SkipPreviousIcon from "@mui/icons-material/SkipPrevious";
 import ShuffleIcon from "@mui/icons-material/Shuffle";
 import RepeatOneIcon from "@mui/icons-material/RepeatOne";
+import defaultSongArtwork from "../../assets/default-artwork.png"
 
 import "./AudioPlayer.css";
 import { SongAttributes } from "../../types/Audio";
@@ -32,27 +33,19 @@ const AudioPlayer = ({ className }: Props) => {
   const [currentTime, setCurrentTime] = useState("0:00");
   const [durationTime, setDurationTime] = useState("0:00");
 
+
   const audioRef = useRef<HTMLAudioElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const [index, setIndex] = useState(0);
   let i = 0;
-  const songList = [
+  const songList:Array<SongAttributes> = [
     {
       artist: "AnomaLies x Kurapika",
       title: "Psycho",
-      url: publicUrl + "someSong/2471676226772517.mp3",
-    },
-    {
-      artist: "Tove lo",
-      title: "Habits",
-      url: publicUrl + "someSong/6041676222653564.mp3",
-    },
-    {
-      artist: "Idk",
-      title: "Some lofi",
-      url: publicUrl + "someSong/music.mp3",
-    },
+      filename: "2471676226772517.mp3",
+      artwork: null
+    }
   ];
 
   function playPause() {
@@ -151,6 +144,14 @@ const AudioPlayer = ({ className }: Props) => {
       containerRef.current.style.setProperty("--volume-before-width", (volume / 100) * 100 + "%");
   },[])
 
+  useEffect(()=>{
+    setIsPlaying(false);
+    if(audioRef.current){
+      audioRef.current.autoplay = true;
+    }
+    setIsPlaying(true);
+  },[song?.currentSong])
+
   if ("mediaSession" in navigator) {
     navigator.mediaSession.metadata = new MediaMetadata({
       artist: song?.currentSong?.artist,
@@ -158,32 +159,32 @@ const AudioPlayer = ({ className }: Props) => {
       artwork: [
         {
           sizes: "64x64",
-          src: publicUrl + "artworks/sary.png",
+          src: publicUrl + "artwork/" +song?.currentSong?.artwork,
           type: "image/png",
         },
         {
           sizes: "128x128",
-          src: publicUrl + "artworks/sary.png",
+          src: publicUrl + "artwork/" +song?.currentSong?.artwork,
           type: "image/png",
         },
         {
           sizes: "192x192",
-          src: publicUrl + "artworks/sary.png",
+          src: publicUrl + "artwork/" +song?.currentSong?.artwork,
           type: "image/png",
         },
         {
           sizes: "256x256",
-          src: publicUrl + "artworks/sary.png",
+          src: publicUrl + "artwork/" +song?.currentSong?.artwork,
           type: "image/png",
         },
         {
           sizes: "384x384",
-          src: publicUrl + "artworks/sary.png",
+          src: publicUrl + "artwork/" +song?.currentSong?.artwork,
           type: "image/png",
         },
         {
           sizes: "512x512",
-          src: publicUrl + "artworks/sary.png",
+          src: publicUrl + "artwork/" +song?.currentSong?.artwork,
           type: "image/png",
         },
       ],
@@ -208,7 +209,7 @@ const AudioPlayer = ({ className }: Props) => {
           className="hidden"
           preload="metadata"
           controls
-          src={song?.currentSong?.url}
+          src={song?.currentSong?.filename ? baseUrl +"/songs/audio/" + song?.currentSong?.filename:""}
           ref={audioRef}
           onLoadedMetadata={displayInfo}
           onTimeUpdate={audioProgress}
@@ -277,7 +278,7 @@ const AudioPlayer = ({ className }: Props) => {
         <div className="info w-full md:w-4/12 lg:w-3/12 flex">
           <div className="artwork hidden w-10 lg:flex items-center justify-center">
             <img
-              src={publicUrl + "artworks/sary.png"}
+              src={song?.currentSong?.artwork ? publicUrl+"/artwork/"+song?.currentSong?.artwork : defaultSongArtwork}
               className="w-full aspect-square object-cover rounded-sm"
             />
           </div>

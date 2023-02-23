@@ -13,7 +13,6 @@ import tokenService from "./services/TokenService";
 import userService from "./services/user.service";
 import { SongContext } from "./context/songContext";
 import { SongAttributes } from "./types/Audio";
-import { publicUrl } from "./config/api";
 import UploadSongView from "./views/UploadSong/UploadSongView";
 
 function App() {
@@ -27,19 +26,27 @@ function App() {
       try {
         const data = await userService.getUser(uid);
         if (data) setCurrentUser(data.data.user as unknown as UserAttributes);
-      } catch (err) {}
+      } catch (err) {
+        if(err && (err as any).response.status && (err as any).response.status === 404){
+          tokenService.removeUser()
+          setCurrentUser(null)
+        }else{
+          console.log(err)
+        }
+      }
     }
     setIsLoading(false);
   }
 
   useEffect(() => {
     getThisUser();
-    setCurrentSong({
-      artist: "Some one",
-      title: "Take this to school, and listen",
-      url: publicUrl + "someSong/music.mp3",
-    });
-  }, []);
+    // setCurrentSong({
+    //   artist: "Some one",
+    //   title: "Take this to school, and listen",
+    //   fileName: "7721677131866617.mp3",
+    //   artwork: "171677131867174.jpg"
+    // });
+  },[]);
 
   return (
       <UserContext.Provider value={{ currentUser, setCurrentUser }}>
