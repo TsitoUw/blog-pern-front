@@ -11,7 +11,7 @@ import SkipNextIcon from "@mui/icons-material/SkipNext";
 import SkipPreviousIcon from "@mui/icons-material/SkipPrevious";
 import ShuffleIcon from "@mui/icons-material/Shuffle";
 import RepeatOneIcon from "@mui/icons-material/RepeatOne";
-import defaultSongArtwork from "../../assets/default-artwork.png"
+import defaultSongArtwork from "../../assets/default-artwork.png";
 
 import "./AudioPlayer.css";
 import { SongAttributes } from "../../types/Audio";
@@ -33,19 +33,18 @@ const AudioPlayer = ({ className }: Props) => {
   const [currentTime, setCurrentTime] = useState("0:00");
   const [durationTime, setDurationTime] = useState("0:00");
 
-
   const audioRef = useRef<HTMLAudioElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const [index, setIndex] = useState(0);
   let i = 0;
-  const songList:Array<SongAttributes> = [
+  const songList: Array<SongAttributes> = [
     {
       artist: "AnomaLies x Kurapika",
       title: "Psycho",
       filename: "2471676226772517.mp3",
-      artwork: null
-    }
+      artwork: null,
+    },
   ];
 
   function playPause() {
@@ -77,8 +76,8 @@ const AudioPlayer = ({ className }: Props) => {
       audioRef.current?.pause();
       setIsPlaying(false);
       song?.setCurrentSong(songList[index] as SongAttributes);
-      
-      if(audioRef.current) audioRef.current.autoplay = true;
+
+      if (audioRef.current) audioRef.current.autoplay = true;
       setIsPlaying(true);
     }
   }
@@ -86,12 +85,12 @@ const AudioPlayer = ({ className }: Props) => {
     if (songList.length > 0 && index < songList.length) {
       setIndex((i) => i + 1);
       i++;
-      console.log(index,i);
+      console.log(index, i);
       audioRef.current?.pause();
       setIsPlaying(false);
       song?.setCurrentSong(songList[index] as SongAttributes);
-      
-      if(audioRef.current) audioRef.current.autoplay = true;
+
+      if (audioRef.current) audioRef.current.autoplay = true;
       setIsPlaying(true);
     }
   }
@@ -108,6 +107,22 @@ const AudioPlayer = ({ className }: Props) => {
       setDurationTime(calclulateTime(audioRef.current.duration));
       setSeekMax(audioRef.current.duration);
     }
+    if (audioRef.current)
+      audioRef.current.onloadedmetadata = () => {
+        if (audioRef.current) setSeekMax(audioRef.current.duration);
+      };
+  }
+
+  if (audioRef.current) {
+    audioRef.current.onprogress = () => {
+      if (audioRef.current) {
+        setCurrentTime(calclulateTime(audioRef.current.currentTime));
+        setSeek(audioRef.current.currentTime);
+      }
+      if (containerRef.current) {
+        containerRef.current.style.setProperty("--seek-before-width", (seek / seekMax) * 100 + "%");
+      }
+    };
   }
 
   function audioProgress() {
@@ -119,7 +134,7 @@ const AudioPlayer = ({ className }: Props) => {
       containerRef.current.style.setProperty("--seek-before-width", (seek / seekMax) * 100 + "%");
     }
 
-    if(audioRef.current?.ended && !isLooping) nextSong();
+    // if (audioRef.current?.ended && !isLooping) nextSong();
   }
 
   function audioSeek(value: number) {
@@ -139,19 +154,19 @@ const AudioPlayer = ({ className }: Props) => {
     else setIsMute(false);
   }, [volume]);
 
-  useEffect(()=>{
-    if (containerRef.current)
-      containerRef.current.style.setProperty("--volume-before-width", (volume / 100) * 100 + "%");
-  },[])
-
-  useEffect(()=>{
+  useEffect(() => {
     setIsPlaying(false);
-    if(audioRef.current){
+    if (audioRef.current) {
       audioRef.current.autoplay = true;
     }
     setIsPlaying(true);
-  },[song?.currentSong])
+  }, [song?.currentSong]);
 
+  useEffect(() => {
+    if (containerRef.current)
+      containerRef.current.style.setProperty("--volume-before-width", (volume / 100) * 100 + "%");
+    setIsPlaying(false);
+  }, []);
   if ("mediaSession" in navigator) {
     navigator.mediaSession.metadata = new MediaMetadata({
       artist: song?.currentSong?.artist,
@@ -159,32 +174,32 @@ const AudioPlayer = ({ className }: Props) => {
       artwork: [
         {
           sizes: "64x64",
-          src: publicUrl + "artwork/" +song?.currentSong?.artwork,
+          src: publicUrl + "artwork/" + song?.currentSong?.artwork,
           type: "image/png",
         },
         {
           sizes: "128x128",
-          src: publicUrl + "artwork/" +song?.currentSong?.artwork,
+          src: publicUrl + "artwork/" + song?.currentSong?.artwork,
           type: "image/png",
         },
         {
           sizes: "192x192",
-          src: publicUrl + "artwork/" +song?.currentSong?.artwork,
+          src: publicUrl + "artwork/" + song?.currentSong?.artwork,
           type: "image/png",
         },
         {
           sizes: "256x256",
-          src: publicUrl + "artwork/" +song?.currentSong?.artwork,
+          src: publicUrl + "artwork/" + song?.currentSong?.artwork,
           type: "image/png",
         },
         {
           sizes: "384x384",
-          src: publicUrl + "artwork/" +song?.currentSong?.artwork,
+          src: publicUrl + "artwork/" + song?.currentSong?.artwork,
           type: "image/png",
         },
         {
           sizes: "512x512",
-          src: publicUrl + "artwork/" +song?.currentSong?.artwork,
+          src: publicUrl + "artwork/" + song?.currentSong?.artwork,
           type: "image/png",
         },
       ],
@@ -209,7 +224,7 @@ const AudioPlayer = ({ className }: Props) => {
           className="hidden"
           preload="metadata"
           controls
-          src={song?.currentSong?.filename ? baseUrl +"/songs/audio/" + song?.currentSong?.filename:""}
+          src={song?.currentSong?.filename ? baseUrl + "songs/audio/" + song?.currentSong?.filename : ""}
           ref={audioRef}
           onLoadedMetadata={displayInfo}
           onTimeUpdate={audioProgress}
@@ -270,7 +285,7 @@ const AudioPlayer = ({ className }: Props) => {
               />
             </div>
             <button className="volume-btn text-neutral-300 flex items-center justify-center" onClick={muteUnmute}>
-              {!isMute ? <VolumeUpIcon fontSize="small"/> : <VolumeOffIcon fontSize="small"/>}
+              {!isMute ? <VolumeUpIcon fontSize="small" /> : <VolumeOffIcon fontSize="small" />}
             </button>
           </div>
         </div>
@@ -278,7 +293,9 @@ const AudioPlayer = ({ className }: Props) => {
         <div className="info w-full md:w-4/12 lg:w-3/12 flex">
           <div className="artwork hidden w-10 lg:flex items-center justify-center">
             <img
-              src={song?.currentSong?.artwork ? publicUrl+"/artwork/"+song?.currentSong?.artwork : defaultSongArtwork}
+              src={
+                song?.currentSong?.artwork ? publicUrl + "/artwork/" + song?.currentSong?.artwork : defaultSongArtwork
+              }
               className="w-full aspect-square object-cover rounded-sm"
             />
           </div>
@@ -288,13 +305,18 @@ const AudioPlayer = ({ className }: Props) => {
             </div>
             <div className="title overflow-hidden whitespace-nowrap truncate">{song?.currentSong?.title}</div>
           </div>
-          <button className="action w-1/5 md:w-max flex items-center justify-center" onClick={favoriteUnfavorite}>
-            {isFavorite ? (
-              <FavoriteIcon className="mx-2 text-rose-600" />
-            ) : (
-              <FavoriteBorderIcon className="mx-2 text-neutral-300" />
-            )}
-          </button>
+          <div className="action w-1/5 md:w-max flex items-center justify-center">
+            <button
+              className="flex items-center justify-center aspect-square rounded-full"
+              onClick={favoriteUnfavorite}
+            >
+              {isFavorite ? (
+                <FavoriteIcon className="mx-2 text-rose-600" />
+              ) : (
+                <FavoriteBorderIcon className="mx-2 text-neutral-300" />
+              )}
+            </button>
+          </div>
         </div>
       </div>
     </div>

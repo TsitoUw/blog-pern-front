@@ -11,7 +11,7 @@ const UploadSongView = () => {
   const [imageData, setImageData] = useState<Uint8Array | null>(null);
   const [imageName, setImageName] = useState("");
   const [imgSrc, setImgSrc] = useState<string>("");
-  const [artist, setArtist] = useState(user?.currentUser ? user.currentUser.name : "");
+  const [artist, setArtist] = useState(user?.currentUser ? user.currentUser.artistname : "");
   const [title, setTitle] = useState("");
   const [releaseDate, setReleaseDate] = useState("");
   const [dateType, setDateType] = useState<"text" | "date">("text");
