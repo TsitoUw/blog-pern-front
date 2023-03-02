@@ -78,7 +78,7 @@ const FeedsView = () => {
         </div> */}
         <p className="p-2 text-neutral-400">Most liked songs</p>
         <div className="songs flex flex-col lg:flex-row justify-evenly items-center gap-3 lg:gap-5 p-2 ">
-          {songs.length > 0 
+          {songs.length > 0
             ? songs.map((song, index) => {
                 return (
                   <div className="song flex flex-row lg:flex-col justify-start lg:justify-evenly items-center w-full gap-5 lg:gap-2 rounded-md bg-slate-900 p-2 shadow-md lg:p-0 lg:shadow-none lg:bg-transparent" key={index}>
