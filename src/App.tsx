@@ -38,7 +38,7 @@ function App() {
       }
     }
   }
- 
+
   useEffect(() => {
     getThisUser();
 <<<<<<< HEAD
