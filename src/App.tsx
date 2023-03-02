@@ -41,7 +41,21 @@ function App() {
 
   useEffect(() => {
     getThisUser();
-  },[]);
+    if (TokenService.getUser()) {
+      const user = TokenService.getUser();
+      if (user?.lastListenedSong) {
+        setCurrentSong(user.lastListenedSong);
+        setIsPlaying(false);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (currentSong) {
+      setLastListened(currentSong);
+      TokenService.updateLastListened(currentSong as SongAttributes);
+    }
+  }, [currentSong]);
 
 
   useEffect(() => {
