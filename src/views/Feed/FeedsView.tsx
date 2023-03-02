@@ -51,7 +51,7 @@ const FeedsView = () => {
     <div className="flex w-full h-full justify-center items-center">
       <div className="w-11/12 flex flex-col ">
         <p className="p-2 text-yellow-200 text-center">
-          I'm still working on other functionality, this feeds isn't working yet
+          I'm still working on other functionality, this feeds isn't working yet...
         </p>
         <p className="p-2 text-neutral-400">New artists</p>
         {/* <div className="new-artist flex justify-center gap-5 p-2">
