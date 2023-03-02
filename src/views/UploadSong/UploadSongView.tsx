@@ -104,8 +104,7 @@ const UploadSongView = () => {
       await axios
         .post(url, chunkedData, {
           headers: {
-            "Access-Control-Allow-Origin": "*",
-            
+            "Access-Control-Allow-Origin": "*",            
             "Content-Type": "application/octet-stream",
           },
           onUploadProgress(progressEvent) {
