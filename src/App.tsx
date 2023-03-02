@@ -13,52 +13,63 @@ import tokenService from "./services/TokenService";
 import userService from "./services/user.service";
 import { SongContext } from "./context/songContext";
 import { SongAttributes } from "./types/Audio";
-import { publicUrl } from "./config/api";
 import UploadSongView from "./views/UploadSong/UploadSongView";
+import { SongStateContext } from "./context/songStateContext";
 
 function App() {
   const [currentUser, setCurrentUser] = useState<UserAttributes | null>(null);
   const [currentSong, setCurrentSong] = useState<SongAttributes | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
   // get user on reload
   async function getThisUser() {
     const uid = tokenService.getUser()?.uid;
     if (uid) {
       try {
-        const user = await userService.getUser(uid);
-        if (user) setCurrentUser(user as unknown as UserAttributes);
-      } catch (err) {}
+        const data = await userService.getUser(uid);
+        if (data) setCurrentUser(data.data.user as unknown as UserAttributes);
+      } catch (err) {
+        if(err && (err as any).response.status && (err as any).response.status === 404){
+          tokenService.removeUser()
+          setCurrentUser(null)
+        }else{
+          console.log(err)
+        }
+      }
     }
     setIsLoading(false);
   }
 
   useEffect(() => {
-    setCurrentSong({
-      artist: "Some one",
-      title: "Take this to school, and listen",
-      url: publicUrl + "someSong/music.mp3",
-    });
     getThisUser();
-  }, []);
+    // setCurrentSong({
+    //   artist: "Some one",
+    //   title: "Take this to school, and listen",
+    //   fileName: "7721677131866617.mp3",
+    //   artwork: "171677131867174.jpg"
+    // });
+  },[]);
 
   return (
       <UserContext.Provider value={{ currentUser, setCurrentUser }}>
         <SongContext.Provider value={{ currentSong, setCurrentSong }}>
+          <SongStateContext.Provider value={{isPlaying, setIsPlaying}}>
+            
           <Router>
             <Routes>
+              <Route path="/welcome" element={<ProtectedRoute reversed={true} />}>
+                <Route path="" element={<HomeView />} />
+              </Route>
               <Route path="/signup" element={<ProtectedRoute reversed={true} />}>
                 <Route path="" element={<SignupView />} />
               </Route>
               <Route path="/signin" element={<ProtectedRoute reversed={true} />}>
                 <Route path="" element={<SigninView />} />
               </Route>
-              <Route path="/welcome" element={<ProtectedRoute reversed={true} />}>
-                <Route path="" element={<HomeView />} />
-              </Route>
 
               <Route path="/" element={<Layout />}>
                 <Route path="" element={<FeedsView />} />
-                <Route path="/:user" element={<ProtectedRoute />}>
+                <Route path="/:user">
                   <Route path="" element={<UploadSongView />} />
                   <Route path="upload" element={<UploadSongView />} />
                 </Route>
@@ -66,6 +77,8 @@ function App() {
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Router>
+          </SongStateContext.Provider>
+
         </SongContext.Provider>
       </UserContext.Provider>
   );

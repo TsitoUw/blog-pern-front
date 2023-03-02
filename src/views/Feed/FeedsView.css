@@ -1,0 +1,7 @@
+.song .artwork .button {
+  @apply bg-transparent 
+}
+
+.song .artwork .button:hover{
+  @apply scale-110 bg-rose-700 bg-opacity-40
+}
