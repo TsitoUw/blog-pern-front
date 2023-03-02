@@ -15,6 +15,7 @@ import defaultSongArtwork from "../../assets/default-artwork.png";
 
 import "./AudioPlayer.css";
 import { SongAttributes } from "../../types/Audio";
+import { SongStateContext } from "../../context/songStateContext";
 
 type Props = {
   className: string;
@@ -22,7 +23,8 @@ type Props = {
 
 const AudioPlayer = ({ className }: Props) => {
   const song = useContext(SongContext);
-  const [isPlaying, setIsPlaying] = useState(false);
+  const state = useContext(SongStateContext);
+
   const [isMute, setIsMute] = useState(false);
   const [isLooping, setIsLooping] = useState(false);
   const [isShuffling, setIsShuffling] = useState(false);
@@ -48,8 +50,8 @@ const AudioPlayer = ({ className }: Props) => {
   ];
 
   function playPause() {
-    audioRef.current && !isPlaying ? audioRef.current?.play() : audioRef.current?.pause();
-    setIsPlaying((prev) => !prev);
+    audioRef.current && !state?.isPlaying ? audioRef.current?.play() : audioRef.current?.pause();
+    if(state) state.setIsPlaying(prev => !prev);
   }
 
   function muteUnmute() {
@@ -74,11 +76,12 @@ const AudioPlayer = ({ className }: Props) => {
       console.log(index, i);
 
       audioRef.current?.pause();
-      setIsPlaying(false);
+      if(state) state.setIsPlaying(false);
+
       song?.setCurrentSong(songList[index] as SongAttributes);
 
       if (audioRef.current) audioRef.current.autoplay = true;
-      setIsPlaying(true);
+      if(state) state.setIsPlaying(true);
     }
   }
   function nextSong() {
@@ -87,17 +90,19 @@ const AudioPlayer = ({ className }: Props) => {
       i++;
       console.log(index, i);
       audioRef.current?.pause();
-      setIsPlaying(false);
+      if(state) state.setIsPlaying(false);
+
       song?.setCurrentSong(songList[index] as SongAttributes);
 
       if (audioRef.current) audioRef.current.autoplay = true;
-      setIsPlaying(true);
+      if(state) state.setIsPlaying(true);
+
     }
   }
   /** */
   function calclulateTime(secs: number) {
-    const minutes = Math.floor(secs / 60);
-    const seconds = Math.floor(secs % 60);
+    const minutes = Math.round(secs / 60);
+    const seconds = Math.round(secs % 60);
     const resSeconds = seconds < 10 ? `0${seconds}` : `${seconds}`;
     return `${minutes}:${resSeconds}`;
   }
@@ -117,7 +122,7 @@ const AudioPlayer = ({ className }: Props) => {
     audioRef.current.onprogress = () => {
       if (audioRef.current) {
         setCurrentTime(calclulateTime(audioRef.current.currentTime));
-        setSeek(audioRef.current.currentTime);
+        setSeek(Math.round(audioRef.current.currentTime));
       }
       if (containerRef.current) {
         containerRef.current.style.setProperty("--seek-before-width", (seek / seekMax) * 100 + "%");
@@ -128,7 +133,7 @@ const AudioPlayer = ({ className }: Props) => {
   function audioProgress() {
     if (audioRef.current) {
       setCurrentTime(calclulateTime(audioRef.current.currentTime));
-      setSeek(audioRef.current.currentTime);
+      setSeek(Math.round(audioRef.current.currentTime));
     }
     if (containerRef.current) {
       containerRef.current.style.setProperty("--seek-before-width", (seek / seekMax) * 100 + "%");
@@ -139,7 +144,7 @@ const AudioPlayer = ({ className }: Props) => {
 
   function audioSeek(value: number) {
     if (audioRef.current) audioRef.current.currentTime = value;
-    setSeek(value);
+    setSeek(Math.round(value));
   }
 
   function changeVolume(value: number) {
@@ -155,18 +160,27 @@ const AudioPlayer = ({ className }: Props) => {
   }, [volume]);
 
   useEffect(() => {
-    setIsPlaying(false);
+    if(state) state.setIsPlaying(false);
     if (audioRef.current) {
       audioRef.current.autoplay = true;
     }
-    setIsPlaying(true);
+    if(state) state.setIsPlaying(true);
+
   }, [song?.currentSong]);
+
+  useEffect(()=>{
+    if(state){
+      if(state.isPlaying) audioRef.current?.play();
+      if(!state.isPlaying) audioRef.current?.pause();
+    }
+  },[state])
 
   useEffect(() => {
     if (containerRef.current)
       containerRef.current.style.setProperty("--volume-before-width", (volume / 100) * 100 + "%");
-    setIsPlaying(false);
+    if(state) state.setIsPlaying(false);
   }, []);
+
   if ("mediaSession" in navigator) {
     navigator.mediaSession.metadata = new MediaMetadata({
       artist: song?.currentSong?.artist,
@@ -206,11 +220,12 @@ const AudioPlayer = ({ className }: Props) => {
     });
     navigator.mediaSession.setActionHandler("pause", () => {
       audioRef.current && audioRef.current?.pause();
-      setIsPlaying(false);
+      if(state) state.setIsPlaying(false);
+
     });
     navigator.mediaSession.setActionHandler("play", () => {
       audioRef.current && audioRef.current?.play();
-      setIsPlaying(true);
+      if(state) state.setIsPlaying(true);
     });
   }
 
@@ -228,8 +243,12 @@ const AudioPlayer = ({ className }: Props) => {
           ref={audioRef}
           onLoadedMetadata={displayInfo}
           onTimeUpdate={audioProgress}
-          onPlay={() => setIsPlaying(true)}
-          onPause={() => setIsPlaying(false)}
+          onPlay={() => {
+            if(state) state.setIsPlaying(true);
+          }}
+          onPause={() => {
+            if(state) state.setIsPlaying(false);
+          }}
           muted={isMute}
           loop={isLooping}
         />
@@ -238,7 +257,7 @@ const AudioPlayer = ({ className }: Props) => {
             <SkipPreviousIcon />
           </button>
           <button className="flex text-3xl text-neutral-300" onClick={playPause}>
-            {isPlaying ? <PauseIcon fontSize="inherit" /> : <PlayArrowIcon fontSize="inherit" />}
+            {state?.isPlaying ? <PauseIcon fontSize="inherit" /> : <PlayArrowIcon fontSize="inherit" />}
           </button>
           <button className="hidden md:flex" onClick={nextSong}>
             <SkipNextIcon />

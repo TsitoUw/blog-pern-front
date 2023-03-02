@@ -14,11 +14,13 @@ import userService from "./services/user.service";
 import { SongContext } from "./context/songContext";
 import { SongAttributes } from "./types/Audio";
 import UploadSongView from "./views/UploadSong/UploadSongView";
+import { SongStateContext } from "./context/songStateContext";
 
 function App() {
   const [currentUser, setCurrentUser] = useState<UserAttributes | null>(null);
   const [currentSong, setCurrentSong] = useState<SongAttributes | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
   // get user on reload
   async function getThisUser() {
     const uid = tokenService.getUser()?.uid;
@@ -51,6 +53,8 @@ function App() {
   return (
       <UserContext.Provider value={{ currentUser, setCurrentUser }}>
         <SongContext.Provider value={{ currentSong, setCurrentSong }}>
+          <SongStateContext.Provider value={{isPlaying, setIsPlaying}}>
+            
           <Router>
             <Routes>
               <Route path="/welcome" element={<ProtectedRoute reversed={true} />}>
@@ -73,6 +77,8 @@ function App() {
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Router>
+          </SongStateContext.Provider>
+
         </SongContext.Provider>
       </UserContext.Provider>
   );
