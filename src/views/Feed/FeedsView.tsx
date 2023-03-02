@@ -49,9 +49,41 @@ const FeedsView = () => {
   return (
     <div className="flex w-full h-full justify-center items-center">
       <div className="w-11/12 flex flex-col ">
+<<<<<<< HEAD
         <p className="p-2 text-neutral-400">Fresh songs</p>
         <div className="songs flex flex-col lg:flex-row justify-evenly max-w-full overflow-hidden overflow-x-auto items-center gap-3 lg:gap-5 p-2 md:pl-24">
           {songs.length > 0 
+=======
+        <p className="p-2 text-yellow-200 text-center">
+          I'm still working on other functionality, this feeds isn't working yet...
+        </p>
+        <p className="p-2 text-neutral-400">New artists</p>
+        {/* <div className="new-artist flex justify-center gap-5 p-2">
+          <div className="artist | flex flex-col items-center justify-center p-1">
+            <div className="profile-pic w-52 h-52 aspect-square bg-emerald-500 rounded-md"></div>
+            <div className="name">name</div>
+          </div>
+          <div className="artist | flex flex-col items-center justify-center p-1">
+            <div className="profile-pic w-52 h-52 aspect-square bg-emerald-500 rounded-md"></div>
+            <div className="name">name</div>
+          </div>
+          <div className="artist | flex flex-col items-center justify-center p-1">
+            <div className="profile-pic w-52 h-52 aspect-square bg-emerald-500 rounded-md"></div>
+            <div className="name">name</div>
+          </div>
+          <div className="artist | flex flex-col items-center justify-center p-1">
+            <div className="profile-pic w-52 h-52 aspect-square bg-emerald-500 rounded-md"></div>
+            <div className="name">name</div>
+          </div>
+          <div className="artist | flex flex-col items-center justify-center p-1">
+            <div className="profile-pic w-52 h-52 aspect-square bg-emerald-500 rounded-md"></div>
+            <div className="name">name</div>
+          </div>
+        </div> */}
+        <p className="p-2 text-neutral-400">Most liked songs</p>
+        <div className="songs flex flex-col lg:flex-row justify-evenly items-center gap-3 lg:gap-5 p-2 ">
+          {songs.length > 0
+>>>>>>> a660e39 (poke vercel eh)
             ? songs.map((song, index) => {
                 return ( 
                   <div className="song flex flex-row lg:flex-col justify-start lg:justify-evenly items-center w-full gap-5 lg:gap-2 rounded-md bg-slate-900 p-2 shadow-md lg:p-0 lg:shadow-none lg:bg-transparent" key={index}>
