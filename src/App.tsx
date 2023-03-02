@@ -42,12 +42,6 @@ function App() {
 
   useEffect(() => {
     getThisUser();
-    // setCurrentSong({
-    //   artist: "Some one",
-    //   title: "Take this to school, and listen",
-    //   fileName: "7721677131866617.mp3",
-    //   artwork: "171677131867174.jpg"
-    // });
   },[]);
 
   return (
