@@ -39,7 +39,7 @@ function App() {
     }
     setIsLoading(false);
   }
- 
+
   useEffect(() => {
     getThisUser();
   },[]);
