@@ -104,6 +104,8 @@ const UploadSongView = () => {
       await axios
         .post(url, chunkedData, {
           headers: {
+            "Access-Control-Allow-Origin": "*",
+            
             "Content-Type": "application/octet-stream",
           },
           onUploadProgress(progressEvent) {
@@ -122,7 +124,7 @@ const UploadSongView = () => {
 
   async function send(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if(!user?.currentUser?.id) throw new Error("User should be logged")
+    if (!user?.currentUser?.id) throw new Error("User should be logged");
     // setDisable(true);
     if (!audioData) return;
     console.log("-- uploading audio --");
@@ -150,7 +152,7 @@ const UploadSongView = () => {
       })
       .catch((err) => {
         setDisable(false);
-        console.log(err)
+        console.log(err);
       });
   }
 
@@ -161,7 +163,9 @@ const UploadSongView = () => {
         <form className="w-full" onSubmit={(e) => send(e)}>
           <div className="songs-info flex flex-col-reverse md:flex-row">
             <div className="media flex flex-col items-center justify-center w-full md:w-3/12">
-              <p className="flex w-full items-center justify-start p-2 py-5 md:p-2 font-light text-neutral-400">Audio file</p>
+              <p className="flex w-full items-center justify-start p-2 py-5 md:p-2 font-light text-neutral-400">
+                Audio file
+              </p>
               <div className="audio flex w-full">
                 <input
                   type="file"
@@ -184,7 +188,9 @@ const UploadSongView = () => {
                   </p>
                 </div>
               </div>
-              <p className="flex w-full items-center justify-start p-2 py-5 md:p-2 font-light text-neutral-400">Artwork</p>
+              <p className="flex w-full items-center justify-start p-2 py-5 md:p-2 font-light text-neutral-400">
+                Artwork
+              </p>
               <div className="artwork flex items-center justify-center relative">
                 <input
                   type="file"
