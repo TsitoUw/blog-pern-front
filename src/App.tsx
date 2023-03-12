@@ -41,7 +41,6 @@ function App() {
 
   useEffect(() => {
     getThisUser();
-<<<<<<< HEAD
     if (TokenService.getUser()) {
       const user = TokenService.getUser();
       if (user?.lastListenedSong) {
@@ -57,9 +56,8 @@ function App() {
       TokenService.updateLastListened(currentSong as SongAttributes);
     }
   }, [currentSong]);
-=======
-  },[]);
->>>>>>> a868d6e (kidj)
+
+
 
   return (
     <UserContext.Provider value={{ currentUser, setCurrentUser }}>
