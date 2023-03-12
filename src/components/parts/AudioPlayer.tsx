@@ -253,19 +253,19 @@ const AudioPlayer = ({ className }: Props) => {
           loop={isLooping}
         />
         <div className="action flex justify-evenly items-center w-1/12 md:w-2/12">
-          <button className="hidden md:flex text-neutral-300" onClick={prevSong}>
+          <button className="hidden md:flex text-neutral-300" onClick={prevSong} name="prev">
             <SkipPreviousIcon />
           </button>
-          <button className="flex text-3xl text-neutral-300" onClick={playPause}>
+          <button className="flex text-3xl text-neutral-300" onClick={playPause} name="play-pause" about='play-pause'>
             {state?.isPlaying ? <PauseIcon fontSize="inherit" /> : <PlayArrowIcon fontSize="inherit" />}
           </button>
-          <button className="hidden md:flex" onClick={nextSong}>
+          <button className="hidden md:flex" onClick={nextSong} name="next">
             <SkipNextIcon />
           </button>
-          <button className="hidden lg:flex" onClick={shuffleUnshuffle}>
+          <button className="hidden lg:flex" onClick={shuffleUnshuffle} name="shuffle">
             <ShuffleIcon className={isShuffling ? "text-rose-600" : "text-neutral-300"} />
           </button>
-          <button className="hidden lg:flex" onClick={loopUnloop}>
+          <button className="hidden lg:flex" onClick={loopUnloop} name="repeat">
             <RepeatOneIcon className={isLooping ? "text-rose-600" : "text-neutral-300"} />
           </button>
         </div>
@@ -303,7 +303,7 @@ const AudioPlayer = ({ className }: Props) => {
                 max="100"
               />
             </div>
-            <button className="volume-btn text-neutral-300 flex items-center justify-center" onClick={muteUnmute}>
+            <button className="volume-btn text-neutral-300 flex items-center justify-center" onClick={muteUnmute} name="mute-unmute">
               {!isMute ? <VolumeUpIcon fontSize="small" /> : <VolumeOffIcon fontSize="small" />}
             </button>
           </div>
@@ -316,6 +316,7 @@ const AudioPlayer = ({ className }: Props) => {
                 song?.currentSong?.artwork ? publicUrl + "/artwork/" + song?.currentSong?.artwork : defaultSongArtwork
               }
               className="w-full aspect-square object-cover rounded-sm"
+              alt="song artwork"
             />
           </div>
           <div className="about  md:flex w-4/5 lg:w-8/12 flex-col p-1 px-3 justify-evenly">
@@ -328,6 +329,7 @@ const AudioPlayer = ({ className }: Props) => {
             <button
               className="flex items-center justify-center aspect-square rounded-full"
               onClick={favoriteUnfavorite}
+              name="favorite"
             >
               {isFavorite ? (
                 <FavoriteIcon className="mx-2 text-rose-600" />

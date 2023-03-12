@@ -77,7 +77,7 @@ const SignupView = () => {
               value={passwordConfirmation}
               onChange={(e) => setPasswordConfirmation(e.target.value)}
             />
-            <button className="button-main" type="submit">
+            <button name="signup" className="button-main" type="submit">
               register
             </button>
           </form>

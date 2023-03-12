@@ -176,6 +176,7 @@ const UploadSongView = () => {
                   <button
                     className={audioName ? "button-main" : "button-secondary"}
                     onClick={() => inAudioFileRef.current?.click()}
+                    name="select-file"
                   >
                     {!audioName ? "select an audio file" : " change audio file?"}
                   </button>
@@ -284,6 +285,8 @@ const UploadSongView = () => {
               className={canUpload ? "button-main" : "button-main disabled"}
               type="submit"
               disabled={!canUpload || disable}
+              name="upload"
+
             >
               Upload
             </button>

@@ -1,20 +1,23 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import Layout from "./components/parts/Layout";
-import SigninView from "./views/Signin/SigninView";
-import ProtectedRoute from "./components/container/ProtectedRoute";
 import { UserContext } from "./context/userContext";
-import { useEffect, useState } from "react";
+import { Suspense, lazy, useEffect, useState } from "react";
+import ProtectedRoute from "./components/container/ProtectedRoute";
 import UserAttributes from "./types/User";
-import NotFound from "./views/Error/NotFound";
-import HomeView from "./views/Home/HomeView";
-import FeedsView from "./views/Feed/FeedsView";
-import SignupView from "./views/Signup/SignupView";
+
 import tokenService from "./services/TokenService";
 import userService from "./services/user.service";
 import { SongContext } from "./context/songContext";
 import { SongAttributes } from "./types/Audio";
-import UploadSongView from "./views/UploadSong/UploadSongView";
 import { SongStateContext } from "./context/songStateContext";
+import Loader from "./components/parts/Loader";
+
+const HomeView = lazy(()=> import("./views/Home/HomeView"));
+const SignupView = lazy(()=>import("./views/Signup/SignupView"));
+const SigninView = lazy(()=>import("./views/Signin/SigninView"));
+const Layout = lazy(()=>import("./components/parts/Layout"));
+const FeedsView = lazy(()=>import("./views/Feed/FeedsView"));
+const UploadSongView = lazy(()=>import("./views/UploadSong/UploadSongView"));
+const NotFound = lazy(()=>import("./views/Error/NotFound"));
 
 function App() {
   const [currentUser, setCurrentUser] = useState<UserAttributes | null>(null);
@@ -50,12 +53,16 @@ function App() {
     // });
   },[]);
 
+
+
   return (
       <UserContext.Provider value={{ currentUser, setCurrentUser }}>
         <SongContext.Provider value={{ currentSong, setCurrentSong }}>
           <SongStateContext.Provider value={{isPlaying, setIsPlaying}}>
             
           <Router>
+            <Suspense fallback={<Loader/>}>
+
             <Routes>
               <Route path="/welcome" element={<ProtectedRoute reversed={true} />}>
                 <Route path="" element={<HomeView />} />
@@ -76,6 +83,8 @@ function App() {
               </Route>
               <Route path="*" element={<NotFound />} />
             </Routes>
+            </Suspense>
+
           </Router>
           </SongStateContext.Provider>
 

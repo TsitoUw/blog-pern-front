@@ -30,7 +30,7 @@ const SigninView = () => {
         <form className="card-content" onSubmit={submit}>
           <input type="text" className="input-text" placeholder="Identifient" value={uid} onChange={(e)=>setUid(e.target.value)}/>
           <input type="password" className="input-text" placeholder="Password" value={password} onChange={(e)=>setPassword(e.target.value)}/>
-          <button className="button-main" type="submit">login</button>
+          <button name="login" className="button-main" type="submit">login</button>
         </form>
       </div>
     </div>

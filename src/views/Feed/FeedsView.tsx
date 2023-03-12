@@ -87,10 +87,12 @@ const FeedsView = () => {
                         <img
                           src={song.artwork ? publicUrl + "artwork/" + song.artwork : defaultSongArtwork}
                           className="image | w-full aspect-square object-cover"
+                          alt="song's artwork"
                         />
                         <button
                           className="button | absolute lg:top-[38%] top-[20%] lg:left-[38%] left-[20%] text-5xl flex items-center justify-center bg-transparent hover:bg-rose-600 transition-all delay-200 hover:bg-opacity-70 hover:backdrop-blur-sm rounded-full p-1"
                           onClick={() => playThis(song)}
+                          name="play-pause"
                         >
                           { (state?.isPlaying && song.filename === songc?.currentSong?.filename) ? <Pause fontSize="inherit"/> : <PlayArrow fontSize="inherit" />}
                         </button>
@@ -158,7 +160,7 @@ const FeedsView = () => {
             </div>
           </div>
         </div>
-        <button className="w-full" onClick={signout}>
+        <button name='logout' className="w-full" onClick={signout}>
           signout
         </button>
       </div>
