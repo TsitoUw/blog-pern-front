@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { useContext, useEffect } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { SongStateContext } from "../../context/songStateContext";
@@ -12,6 +13,20 @@ const HomeView = () => {
     return songState?.setIsPlaying(false);
   }, []);
   
+=======
+import { useContext, useEffect } from "react"
+import { Link, NavLink } from "react-router-dom"
+import { SongStateContext } from "../../context/songStateContext"
+
+type Props = {}
+
+const HomeView = (props: Props) => {
+  const songState = useContext(SongStateContext);
+  useEffect(()=>{
+    songState?.setIsPlaying(false);
+    return songState?.setIsPlaying(false);
+  },[])
+>>>>>>> 533b637 (Made it pwa)
   return (
     <div className="relative">
       <NavBar />
