@@ -2,9 +2,12 @@ import { ChangeEvent, Dispatch, FormEvent, SetStateAction, useContext, useEffect
 import { UserContext } from "../../context/userContext";
 import defaultArtwork from "../../assets/default-artwork.png";
 import axios from "../../services/axios";
+import { useNavigate } from "react-router-dom";
 
 const UploadSongView = () => {
   const user = useContext(UserContext);
+
+  const navigate = useNavigate();
 
   const [audioData, setAudioData] = useState<Uint8Array | null>(null);
   const [audioName, setAudioName] = useState("");
@@ -36,7 +39,6 @@ const UploadSongView = () => {
       setName(e.target.files[0].name);
       reader.readAsArrayBuffer(e.target.files[0]);
       reader.onloadstart = () => {
-        console.log("charging data to memory");
         setIsLoadingFile(true);
         setDisable(true);
       };
@@ -44,7 +46,6 @@ const UploadSongView = () => {
         setData(new Uint8Array(reader.result as ArrayBufferLike));
         setIsLoadingFile(false);
         setDisable(false);
-        console.log("loaded");
       };
       if (setImgSrc) {
         const readerForDataURL = new FileReader();
@@ -70,13 +71,14 @@ const UploadSongView = () => {
     return `${rand}${date}${ext}`;
   }
 
-  async function chunkUpload(
+  async function uploadFile(
     data: Uint8Array,
     fileName: string,
     type: "artwork" | "userpic" | "audio",
+    chunked: boolean = false,
     chunk_sz?: number
   ) {
-    const fname = generateRandomFileName(fileName);
+    let fname = generateRandomFileName(fileName);
     const CHUNK_SIZE = chunk_sz ? 1024 * 1024 * chunk_sz : 1024 * 1024;
     const chunkLen = data.byteLength;
     const chunkNumber = Math.ceil(chunkLen / CHUNK_SIZE);
@@ -96,27 +98,49 @@ const UploadSongView = () => {
     let index = 0;
     let chunkSent = 0;
 
-    do {
-      const chunkedData = data.slice(CHUNK_SIZE * index, CHUNK_SIZE * ++index);
-      // overall progress
-      console.log(Math.floor((index * 100) / chunkNumber) + "%");
-      let result: unknown;
+    if (chunked) {
+      do {
+        const chunkedData = data.slice(CHUNK_SIZE * index, CHUNK_SIZE * ++index);
+        // overall progress
+        // console.log(Math.floor((index * 100) / chunkNumber) + "%");
+        let result: unknown;
+        await axios
+          .post(url, chunkedData, {
+            headers: {
+              "Content-Type": "application/octet-stream",
+            },
+            onUploadProgress(progressEvent) {
+              // handle each chunk progress here
+            },
+          })
+          .then((res) => {
+            result = res;
+          });
+        if (!result) break;
+        chunkSent += CHUNK_SIZE;
+      } while (chunkSent < chunkLen);
+    } else {
+      const extn = fileName.slice(fileName.lastIndexOf(".") + 1);
       await axios
-        .post(url, chunkedData, {
+        .post(url, data, {
           headers: {
             "Access-Control-Allow-Origin": "*",            
             "Content-Type": "application/octet-stream",
           },
           onUploadProgress(progressEvent) {
             // handle each chunk progress here
+            // console.log(progressEvent.loaded + "/" + data.length);
           },
         })
         .then((res) => {
-          result = res;
+          //upload done
+          fname = res.data;
+          // console.log(res);
+        })
+        .catch((err) => {
+          console.error(err);
         });
-      if (!result) break;
-      chunkSent += CHUNK_SIZE;
-    } while (chunkSent < chunkLen);
+    }
 
     return fname;
   }
@@ -126,11 +150,11 @@ const UploadSongView = () => {
     if (!user?.currentUser?.id) throw new Error("User should be logged");
     // setDisable(true);
     if (!audioData) return;
-    console.log("-- uploading audio --");
-    const audioResFilename = await chunkUpload(audioData, audioName, "audio");
-    console.log("-- uploading artwork --");
+    // console.log("-- uploading audio --");
+    const audioResFilename = await uploadFile(audioData, audioName, "audio", true);
+    // console.log("-- uploading artwork --");
     let artworkResFilename = null;
-    if (imageData) artworkResFilename = await chunkUpload(imageData, imageName, "artwork");
+    if (imageData) artworkResFilename = await uploadFile(imageData, imageName, "artwork");
 
     // Sending all text info
     const songsInformations = {
@@ -146,8 +170,9 @@ const UploadSongView = () => {
     await axios
       .post("/songs/", { ...songsInformations })
       .then((res) => {
-        console.log(res);
+        // console.log(res);
         setDisable(false);
+        navigate("/");
       })
       .catch((err) => {
         setDisable(false);
@@ -174,12 +199,14 @@ const UploadSongView = () => {
                   onChange={(e) => handleChange(e, setAudioName, setAudioData)}
                   ref={inAudioFileRef}
                   disabled={disable || isLoadingFile}
+                  aria-hidden='true'
                 />
                 <div className="flex flex-col w-full">
                   <button
                     className={audioName ? "button-main" : "button-secondary"}
                     onClick={() => inAudioFileRef.current?.click()}
-                    name="select-file"
+                    aria-label="select file"
+                    type="button"
                   >
                     {!audioName ? "select an audio file" : " change audio file?"}
                   </button>
@@ -200,6 +227,7 @@ const UploadSongView = () => {
                   onChange={(e) => handleChange(e, setImageName, setImageData, setImgSrc)}
                   ref={inImageFileRef}
                   disabled={disable || isLoadingFile}
+                  aria-hidden='true'
                 />
                 <div className="artwork flex w-full justify-center items-center">
                   <img
@@ -208,6 +236,8 @@ const UploadSongView = () => {
                     onClick={() => {
                       inImageFileRef.current?.click();
                     }}
+                    decoding="async"
+                    loading="eager"
                   />
                 </div>
 
@@ -240,6 +270,7 @@ const UploadSongView = () => {
                   onChange={(e) => {
                     setTitle(e.target.value);
                   }}
+                  aria-label="song title"
                 />
               </div>
               <div className="artist flex w-full">
@@ -261,6 +292,7 @@ const UploadSongView = () => {
                   onChange={(e) => {
                     setDescription(e.target.value);
                   }}
+                  aria-label="description field"
                 />
               </div>
               <div className="release-date flex w-full">
@@ -277,10 +309,10 @@ const UploadSongView = () => {
                   }}
                   onChange={(e) => {
                     setReleaseDate(e.target.value);
-                    console.log(releaseDate);
                   }}
                   value={releaseDate}
                   placeholder="Release date"
+                  aria-label="select release date"
                 />
               </div>
             </div>
@@ -290,8 +322,7 @@ const UploadSongView = () => {
               className={canUpload ? "button-main" : "button-main disabled"}
               type="submit"
               disabled={!canUpload || disable}
-              name="upload"
-
+              aria-label="procced to upload"
             >
               Upload
             </button>
