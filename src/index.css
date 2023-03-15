@@ -1,6 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+* {
+  scroll-behavior: smooth
+}
 
 body {
   @apply bg-slate-800 text-white font-sans scroll-smooth; 

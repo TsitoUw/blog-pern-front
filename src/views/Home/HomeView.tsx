@@ -1,8 +1,15 @@
+import { useContext, useEffect } from "react"
 import { Link, NavLink } from "react-router-dom"
+import { SongStateContext } from "../../context/songStateContext"
 
 type Props = {}
 
 const HomeView = (props: Props) => {
+  const songState = useContext(SongStateContext);
+  useEffect(()=>{
+    songState?.setIsPlaying(false);
+    return songState?.setIsPlaying(false);
+  },[])
   return (
     <>
       <div className="topbar | w-full p-4 flex justify-between">

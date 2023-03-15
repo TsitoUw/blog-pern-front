@@ -26,7 +26,6 @@ const FeedsView = () => {
   async function getSongs() {
     const songs = await songService.get();
     setSongs(songs);
-    console.log(songs);
   }
 
   useEffect(() => {
@@ -77,7 +76,7 @@ const FeedsView = () => {
           </div>
         </div> */}
         <p className="p-2 text-neutral-400">Most liked songs</p>
-        <div className="songs flex flex-col lg:flex-row justify-evenly items-center gap-3 lg:gap-5 p-2 ">
+        <div className="songs flex flex-col lg:flex-row justify-evenly max-w-full overflow-hidden overflow-x-auto items-center gap-3 lg:gap-5 p-2 ">
           {songs.length > 0 
             ? songs.map((song, index) => {
                 return (
@@ -86,13 +85,16 @@ const FeedsView = () => {
                       <div className="ctn artwork w-24 lg:w-48 h-24 lg:h-48 aspect-square bg-emerald-500 rounded-xl relative flex items-center justify-center overflow-hidden">
                         <img
                           src={song.artwork ? publicUrl + "artwork/" + song.artwork : defaultSongArtwork}
-                          className="image | w-full aspect-square object-cover"
+                          className="image | max-w-full w-full aspect-square object-cover"
                           alt="song's artwork"
+                          decoding="async"
+                          loading="lazy"
                         />
                         <button
                           className="button | absolute lg:top-[38%] top-[20%] lg:left-[38%] left-[20%] text-5xl flex items-center justify-center bg-transparent hover:bg-rose-600 transition-all delay-200 hover:bg-opacity-70 hover:backdrop-blur-sm rounded-full p-1"
                           onClick={() => playThis(song)}
-                          name="play-pause"
+                          accessKey="name"
+                          aria-label={`play-pause ${song.artist} ${song.title}`}
                         >
                           { (state?.isPlaying && song.filename === songc?.currentSong?.filename) ? <Pause fontSize="inherit"/> : <PlayArrow fontSize="inherit" />}
                         </button>

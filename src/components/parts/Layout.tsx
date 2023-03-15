@@ -2,7 +2,6 @@ import { Outlet, NavLink } from "react-router-dom";
 import AudioPlayer from "./AudioPlayer";
 import GraphicEqIcon from "@mui/icons-material/GraphicEq";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import Search from "@mui/icons-material/Search";
 import { useContext } from "react";
 import { UserContext } from "../../context/userContext";
@@ -16,15 +15,14 @@ const Layout = (props: Props) => {
         <NavLink about="home" to={user?.currentUser?"/":"/welcome"} className="text-white p-2 w-2/12 flex items-center justify-start"><GraphicEqIcon className='text-rose-600'/> Musicc</NavLink>
         <div className="search p-2 w-8/12 hidden md:flex items-center justify-center">
           <div className="dummy-serch | flex items-center justify-center border border-slate-600 p-1 rounded-md w-3/5">
-            <input type="search" name="search" className="px-2 bg-transparent w-full"/>
+            <input type="search" name="search" className="px-2 bg-transparent w-full" aria-label="search input"/>
             <Search className="text-neutral-300 cursor-pointer"/>
           </div>
         </div>
         <div className="user-search | p-2 w-2/12 flex items-center justify-end">
 
-          <NavLink about="search" to="/search" className="flex md:hidden text-white mx-3"><Search /></NavLink>
-          <NavLink about="users" to="/users" className="text-white "><AccountCircleOutlinedIcon /></NavLink>
-          <NavLink about="users" to="/users" className="text-rose-600 hidden"><AccountCircleIcon /></NavLink>
+          <NavLink aria-label="search" to="/search" className="flex md:hidden text-white mx-3"><Search /></NavLink>
+          <NavLink aria-label="upload" to="/users" className="text-white "><AccountCircleOutlinedIcon /></NavLink>
         </div>
       </div>
       <div className="px-2 md:px-4 pb-16 z-0">
