@@ -58,6 +58,12 @@ function App() {
   }, [currentSong]);
 
 
+  useEffect(() => {
+    if (currentSong) {
+      setLastListened(currentSong);
+      TokenService.updateLastListened(currentSong as SongAttributes);
+    }
+  }, [currentSong]);
 
   return (
     <UserContext.Provider value={{ currentUser, setCurrentUser }}>
