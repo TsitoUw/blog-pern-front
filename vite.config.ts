@@ -7,15 +7,10 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({ 
-<<<<<<< HEAD
-      mode:'development',
+      mode:'production',
       minify:true,
       registerType: "autoUpdate",
       injectRegister: "auto",
-=======
-      registerType: "autoUpdate",
-      injectRegister: "inline",
->>>>>>> 533b637 (Made it pwa)
       devOptions:{
         enabled:true
       },
