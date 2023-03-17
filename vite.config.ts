@@ -7,8 +7,10 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({ 
+      mode:'development',
+      minify:true,
       registerType: "autoUpdate",
-      injectRegister: "inline",
+      injectRegister: "auto",
       devOptions:{
         enabled:true
       },
@@ -22,6 +24,18 @@ export default defineConfig({
         display: "standalone",
         lang:"en",
         icons: [
+          {
+            src: "/icons/manifest-icon-192.maskable.png",
+            sizes: "192x192",
+            type: "image/png",
+            purpose: "maskable"
+          },
+          {
+            src: "/icons/manifest-icon-512.maskable.png",
+            sizes: "512x512",
+            type: "image/png",
+            purpose: "maskable"
+          },
           {
             src: "/icons/manifest-icon-192.maskable.png",
             sizes: "192x192",
