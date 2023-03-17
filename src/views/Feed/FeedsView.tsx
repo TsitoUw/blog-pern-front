@@ -86,14 +86,13 @@ const FeedsView = () => {
                         <img
                           src={song.artwork ? publicUrl + "artwork/" + song.artwork : defaultSongArtwork}
                           className="image | max-w-full w-full aspect-square object-cover"
-                          alt="song's artwork"
+                          alt={`${song.artist} - ${song.title} artwork`}
                           decoding="async"
                           loading="lazy"
                         />
                         <button
                           className="button | absolute lg:top-[38%] top-[20%] lg:left-[38%] left-[20%] text-5xl flex items-center justify-center bg-transparent hover:bg-rose-600 transition-all delay-200 hover:bg-opacity-70 hover:backdrop-blur-sm rounded-full p-1"
                           onClick={() => playThis(song)}
-                          accessKey="name"
                           aria-label={`play-pause ${song.artist} ${song.title}`}
                         >
                           { (state?.isPlaying && song.filename === songc?.currentSong?.filename) ? <Pause fontSize="inherit"/> : <PlayArrow fontSize="inherit" />}
@@ -112,56 +111,8 @@ const FeedsView = () => {
                 );
               })
             : null}
-          {/* <div className="song | flex flex-col items-center justify-center p-1">
-            <div className="artwork w-52 h-52 aspect-square bg-emerald-500 rounded-3xl relative flex items-center justify-center">
-              <div className="absolute top-[30%] left-[30%] text-8xl flex items-center justify-center">
-                <PlayArrow fontSize="inherit" />
-              </div>
-            </div>
-            <div className="name">name</div>
-          </div>
-          <div className="song | flex flex-col items-center justify-center p-1">
-            <div className="artwork w-52 h-52 aspect-square bg-emerald-500 rounded-3xl relative flex items-center justify-center">
-              <div className="absolute top-[30%] left-[30%] text-8xl flex items-center justify-center">
-                <PlayArrow fontSize="inherit" />
-              </div>
-            </div>
-            <div className="name">name</div>
-          </div>
-          <div className="song | flex flex-col items-center justify-center p-1">
-            <div className="artwork w-52 h-52 aspect-square bg-emerald-500 rounded-3xl relative flex items-center justify-center">
-              <div className="absolute top-[30%] left-[30%] text-8xl flex items-center justify-center">
-                <PlayArrow fontSize="inherit" />
-              </div>
-            </div>
-            <div className="name">name</div>
-          </div>
-          <div className="song | flex flex-col items-center justify-center p-1">
-            <div className="artwork w-52 h-52 aspect-square bg-emerald-500 rounded-3xl relative flex items-center justify-center">
-              <div className="absolute top-[30%] left-[30%] text-8xl flex items-center justify-center">
-                <PlayArrow fontSize="inherit" />
-              </div>
-            </div>
-            <div className="name">name</div>
-          </div>
-          <div className="song | flex flex-col items-center justify-center p-1">
-            <div className="artwork w-52 h-52 aspect-square bg-emerald-500 rounded-3xl relative flex items-center justify-center">
-              <div className="absolute top-[30%] left-[30%] text-8xl flex items-center justify-center">
-                <PlayArrow fontSize="inherit" />
-              </div>
-            </div>
-            <div className="name">name</div>
-          </div> */}
         </div>
         <p className="p-2 text-neutral-400">Your Playlists</p>
-        <div className="playlist p-2">
-          <div className="card-container">
-            <div className="card-content">
-              <p>song 1</p>
-              <p>song 2</p>
-            </div>
-          </div>
-        </div>
         <button name='logout' className="w-full" onClick={signout}>
           signout
         </button>
