@@ -6,19 +6,20 @@ import UserAttributes from "./types/User";
 import tokenService from "./services/TokenService";
 import userService from "./services/user.service";
 import { SongContext } from "./context/songContext";
-import { SongAttributes } from "./types/Audio";
+import { SongAttributes, SongMassive } from "./types/Audio";
 import { SongStateContext } from "./context/songStateContext";
 import Loader from "./components/parts/Loader";
 
 import routes from "./routes";
 import TokenService from "./services/TokenService";
 
+
 function App() {
   const [currentUser, setCurrentUser] = useState<UserAttributes | null>(null);
-  const [currentSong, setCurrentSong] = useState<SongAttributes | null>(null);
+  const [currentSong, setCurrentSong] = useState<SongAttributes |SongMassive| null>(null);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
 
-  const [lastListened, setLastListened] = useState<SongAttributes | null>(null);
+  const [lastListened, setLastListened] = useState<SongAttributes |SongMassive| null>(null);
 
   // get user on reload
   async function getThisUser() {
