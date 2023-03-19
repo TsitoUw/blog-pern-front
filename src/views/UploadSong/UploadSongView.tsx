@@ -107,6 +107,7 @@ const UploadSongView = () => {
         await axios
           .post(url, chunkedData, {
             headers: {
+              "Access-Control-Allow-Origin": "*",
               "Content-Type": "application/octet-stream",
             },
             onUploadProgress(progressEvent) {
@@ -124,8 +125,8 @@ const UploadSongView = () => {
       await axios
         .post(url, data, {
           headers: {
-            "Access-Control-Allow-Origin": "*",            
-            "Content-Type": "application/octet-stream",
+            "Access-Control-Allow-Origin": "*",
+            "Content-Type": `image/${extn}`,
           },
           onUploadProgress(progressEvent) {
             // handle each chunk progress here
@@ -176,7 +177,7 @@ const UploadSongView = () => {
       })
       .catch((err) => {
         setDisable(false);
-        console.log(err);
+        console.error(err);
       });
   }
 
