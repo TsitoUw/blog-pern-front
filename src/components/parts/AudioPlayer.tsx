@@ -41,12 +41,7 @@ const AudioPlayer = ({ className }: Props) => {
   const [index, setIndex] = useState(0);
   let i = 0;
   const songList: Array<SongAttributes> = [
-    {
-      artist: "AnomaLies x Kurapika",
-      title: "Psycho",
-      filename: "2471676226772517.mp3",
-      artwork: null,
-    },
+    
   ];
 
   function playPause() {
@@ -172,12 +167,12 @@ const AudioPlayer = ({ className }: Props) => {
         album: "playlist 0",
         artwork: [
           {
-            src: `${publicUrl}artwork/${song?.currentSong?.artwork}`,
+            src: `${publicUrl}/artwork/${song?.currentSong?.artwork}`,
             sizes: "192x192",
             type: "image/png",
           },
           {
-            src: `${publicUrl}artwork/${song?.currentSong?.artwork}`,
+            src: `${publicUrl}/artwork/${song?.currentSong?.artwork}`,
             sizes: "512x512",
             type: "image/png",
           },
@@ -217,7 +212,7 @@ const AudioPlayer = ({ className }: Props) => {
           className="hidden"
           preload="metadata"
           controls
-          src={song?.currentSong?.filename ? baseUrl + "songs/audio/" + song?.currentSong?.filename : ""}
+          src={song?.currentSong?.filename ? baseUrl + "/songs/audio/" + song?.currentSong?.filename : ""}
           ref={audioRef}
           onLoadedMetadata={displayInfo}
           onTimeUpdate={audioProgress}

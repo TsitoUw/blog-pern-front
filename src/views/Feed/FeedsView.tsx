@@ -34,9 +34,9 @@ const FeedsView = () => {
 
   function playThis(song: SongMassive) {
     if(state?.isPlaying && song.filename === songc?.currentSong?.filename ){
-      state.setIsPlaying(prev => !prev);
+      state.setIsPlaying(isPlaying => !isPlaying);
     }else{
-      const payload: SongAttributes = {
+      const payload: SongMassive = {
         artist: song.artist,
         title: song.title,
         artwork: song.artwork,
@@ -84,7 +84,7 @@ const FeedsView = () => {
                     <div className="artwork">
                       <div className="ctn artwork w-24 lg:w-48 h-24 lg:h-48 aspect-square bg-emerald-500 rounded-xl relative flex items-center justify-center overflow-hidden">
                         <img
-                          src={song.artwork ? publicUrl + "artwork/" + song.artwork : defaultSongArtwork}
+                          src={song.artwork ? publicUrl + "/artwork/" + song.artwork : defaultSongArtwork}
                           className="image | max-w-full w-full aspect-square object-cover"
                           alt={`${song.artist} - ${song.title} artwork`}
                           decoding="async"
