@@ -50,7 +50,7 @@ const FeedsView = () => {
     <div className="flex w-full h-full justify-center items-center">
       <div className="w-11/12 flex flex-col ">
         <p className="p-2 text-neutral-400">Fresh songs</p>
-        <div className="songs flex flex-col lg:flex-row justify-evenly max-w-full overflow-hidden overflow-x-auto items-center gap-3 lg:gap-5 p-2 ">
+        <div className="songs flex flex-col lg:flex-row justify-evenly max-w-full overflow-hidden overflow-x-auto items-center gap-3 lg:gap-5 p-2 md:pl-24">
           {songs.length > 0 
             ? songs.map((song, index) => {
                 return (
