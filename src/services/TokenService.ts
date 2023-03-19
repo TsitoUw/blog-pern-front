@@ -1,3 +1,4 @@
+import { SongAttributes } from "../types/Audio";
 import { UserSessionAttributes } from "../types/User";
 
 class TokenService {
@@ -36,6 +37,15 @@ class TokenService {
 
   setUser(user:UserSessionAttributes){
     localStorage.setItem("user", JSON.stringify(user));
+  }
+
+  updateLastListened(song:SongAttributes){
+    let store = localStorage.getItem("user");
+    if(store){
+      let user = JSON.parse(store) as UserSessionAttributes;
+      user.lastListenedSong = song;
+      localStorage.setItem("user", JSON.stringify(user));
+    }
   }
 
   removeUser(){

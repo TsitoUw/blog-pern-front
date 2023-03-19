@@ -1,5 +1,4 @@
 import GraphicEqIcon from '@mui/icons-material/GraphicEq'
-import React from 'react'
 
 const Loader = () => {
   return (

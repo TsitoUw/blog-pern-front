@@ -1,3 +1,5 @@
+import { SongAttributes } from "./Audio";
+
 export default interface UserAttributes {
   id: string;
   name:string;
@@ -25,4 +27,5 @@ export interface UserSessionAttributes {
   uid: string;
   accessToken: string;
   refreshToken: string;
+  lastListenedSong?:SongAttributes
 }

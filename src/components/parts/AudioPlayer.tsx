@@ -41,17 +41,12 @@ const AudioPlayer = ({ className }: Props) => {
   const [index, setIndex] = useState(0);
   let i = 0;
   const songList: Array<SongAttributes> = [
-    {
-      artist: "AnomaLies x Kurapika",
-      title: "Psycho",
-      filename: "2471676226772517.mp3",
-      artwork: null,
-    },
+    
   ];
 
   function playPause() {
     audioRef.current && !state?.isPlaying ? audioRef.current?.play() : audioRef.current?.pause();
-    if(state) state.setIsPlaying(prev => !prev);
+    if (state) state.setIsPlaying((prev) => !prev);
   }
 
   function muteUnmute() {
@@ -76,12 +71,12 @@ const AudioPlayer = ({ className }: Props) => {
       console.log(index, i);
 
       audioRef.current?.pause();
-      if(state) state.setIsPlaying(false);
+      if (state) state.setIsPlaying(false);
 
       song?.setCurrentSong(songList[index] as SongAttributes);
 
       if (audioRef.current) audioRef.current.autoplay = true;
-      if(state) state.setIsPlaying(true);
+      if (state) state.setIsPlaying(true);
     }
   }
   function nextSong() {
@@ -90,13 +85,12 @@ const AudioPlayer = ({ className }: Props) => {
       i++;
       console.log(index, i);
       audioRef.current?.pause();
-      if(state) state.setIsPlaying(false);
+      if (state) state.setIsPlaying(false);
 
       song?.setCurrentSong(songList[index] as SongAttributes);
 
       if (audioRef.current) audioRef.current.autoplay = true;
-      if(state) state.setIsPlaying(true);
-
+      if (state) state.setIsPlaying(true);
     }
   }
   /** */
@@ -160,74 +154,53 @@ const AudioPlayer = ({ className }: Props) => {
   }, [volume]);
 
   useEffect(() => {
-    if(state) state.setIsPlaying(false);
+    if (state) state.setIsPlaying(false);
     if (audioRef.current) {
       audioRef.current.autoplay = true;
     }
-    if(state) state.setIsPlaying(true);
+    if (state) state.setIsPlaying(true);
 
+    if ("mediaSession" in navigator) {
+      navigator.mediaSession.metadata = new MediaMetadata({
+        artist: song?.currentSong?.artist,
+        title: song?.currentSong?.title,
+        album: "playlist 0",
+        artwork: [
+          {
+            src: `${publicUrl}/artwork/${song?.currentSong?.artwork}`,
+            sizes: "192x192",
+            type: "image/png",
+          },
+          {
+            src: `${publicUrl}/artwork/${song?.currentSong?.artwork}`,
+            sizes: "512x512",
+            type: "image/png",
+          },
+        ],
+      });
+      navigator.mediaSession.setActionHandler("pause", () => {
+        audioRef.current && audioRef.current?.pause();
+        if (state) state.setIsPlaying(false);
+      });
+      navigator.mediaSession.setActionHandler("play", () => {
+        audioRef.current && audioRef.current?.play();
+        if (state) state.setIsPlaying(true);
+      });
+    }
   }, [song?.currentSong]);
 
-  useEffect(()=>{
-    if(state){
-      if(state.isPlaying) audioRef.current?.play();
-      if(!state.isPlaying) audioRef.current?.pause();
+  useEffect(() => {
+    if (state) {
+      if (state.isPlaying) audioRef.current?.play();
+      if (!state.isPlaying) audioRef.current?.pause();
     }
-  },[state])
+  }, [state?.isPlaying]);
 
   useEffect(() => {
     if (containerRef.current)
       containerRef.current.style.setProperty("--volume-before-width", (volume / 100) * 100 + "%");
-    if(state) state.setIsPlaying(false);
+    if (state) state.setIsPlaying(false);
   }, []);
-
-  if ("mediaSession" in navigator) {
-    navigator.mediaSession.metadata = new MediaMetadata({
-      artist: song?.currentSong?.artist,
-      title: song?.currentSong?.title,
-      artwork: [
-        {
-          sizes: "64x64",
-          src: publicUrl + "artwork/" + song?.currentSong?.artwork,
-          type: "image/png",
-        },
-        {
-          sizes: "128x128",
-          src: publicUrl + "artwork/" + song?.currentSong?.artwork,
-          type: "image/png",
-        },
-        {
-          sizes: "192x192",
-          src: publicUrl + "artwork/" + song?.currentSong?.artwork,
-          type: "image/png",
-        },
-        {
-          sizes: "256x256",
-          src: publicUrl + "artwork/" + song?.currentSong?.artwork,
-          type: "image/png",
-        },
-        {
-          sizes: "384x384",
-          src: publicUrl + "artwork/" + song?.currentSong?.artwork,
-          type: "image/png",
-        },
-        {
-          sizes: "512x512",
-          src: publicUrl + "artwork/" + song?.currentSong?.artwork,
-          type: "image/png",
-        },
-      ],
-    });
-    navigator.mediaSession.setActionHandler("pause", () => {
-      audioRef.current && audioRef.current?.pause();
-      if(state) state.setIsPlaying(false);
-
-    });
-    navigator.mediaSession.setActionHandler("play", () => {
-      audioRef.current && audioRef.current?.play();
-      if(state) state.setIsPlaying(true);
-    });
-  }
 
   return (
     <div
@@ -239,33 +212,34 @@ const AudioPlayer = ({ className }: Props) => {
           className="hidden"
           preload="metadata"
           controls
-          src={song?.currentSong?.filename ? baseUrl + "songs/audio/" + song?.currentSong?.filename : ""}
+          src={song?.currentSong?.filename ? baseUrl + "/songs/audio/" + song?.currentSong?.filename : ""}
           ref={audioRef}
           onLoadedMetadata={displayInfo}
           onTimeUpdate={audioProgress}
           onPlay={() => {
-            if(state) state.setIsPlaying(true);
+            if (state) state.setIsPlaying(true);
           }}
           onPause={() => {
-            if(state) state.setIsPlaying(false);
+            if (state) state.setIsPlaying(false);
           }}
           muted={isMute}
           loop={isLooping}
+          aria-hidden="true"
         />
         <div className="action flex justify-evenly items-center w-1/12 md:w-2/12">
-          <button className="hidden md:flex text-neutral-300" onClick={prevSong} name="prev">
+          <button className="hidden md:flex text-neutral-300" onClick={prevSong} aria-label="previous controller">
             <SkipPreviousIcon />
           </button>
-          <button className="flex text-3xl text-neutral-300" onClick={playPause} name="play-pause" about='play-pause'>
+          <button className="flex text-3xl text-neutral-300" onClick={playPause} aria-label="play-pause controller">
             {state?.isPlaying ? <PauseIcon fontSize="inherit" /> : <PlayArrowIcon fontSize="inherit" />}
           </button>
-          <button className="hidden md:flex" onClick={nextSong} name="next">
+          <button className="hidden md:flex" onClick={nextSong} aria-label="next controller">
             <SkipNextIcon />
           </button>
-          <button className="hidden lg:flex" onClick={shuffleUnshuffle} name="shuffle">
+          <button className="hidden lg:flex" onClick={shuffleUnshuffle} aria-label="shuffle controller">
             <ShuffleIcon className={isShuffling ? "text-rose-600" : "text-neutral-300"} />
           </button>
-          <button className="hidden lg:flex" onClick={loopUnloop} name="repeat">
+          <button className="hidden lg:flex" onClick={loopUnloop} aria-label="repeat controller">
             <RepeatOneIcon className={isLooping ? "text-rose-600" : "text-neutral-300"} />
           </button>
         </div>
@@ -283,6 +257,7 @@ const AudioPlayer = ({ className }: Props) => {
               audioSeek(Number(e.currentTarget.value));
             }}
             max={seekMax}
+            aria-label="seek audio controller"
           />
 
           <div id="duration-time" className="w-2/12 lg:w-1/12 flex items-center justify-center text-sm">
@@ -301,9 +276,14 @@ const AudioPlayer = ({ className }: Props) => {
                   changeVolume(Number(e.currentTarget.value));
                 }}
                 max="100"
+                aria-label="seek volume controller"
               />
             </div>
-            <button className="volume-btn text-neutral-300 flex items-center justify-center" onClick={muteUnmute} name="mute-unmute">
+            <button
+              className="volume-btn text-neutral-300 flex items-center justify-center"
+              onClick={muteUnmute}
+              aria-label="mute-unmute"
+            >
               {!isMute ? <VolumeUpIcon fontSize="small" /> : <VolumeOffIcon fontSize="small" />}
             </button>
           </div>
@@ -315,21 +295,25 @@ const AudioPlayer = ({ className }: Props) => {
               src={
                 song?.currentSong?.artwork ? publicUrl + "/artwork/" + song?.currentSong?.artwork : defaultSongArtwork
               }
-              className="w-full aspect-square object-cover rounded-sm"
+              className="max-w-full w-full aspect-square object-cover rounded-sm"
               alt="song artwork"
+              decoding="async"
+              loading="eager"
             />
           </div>
           <div className="about  md:flex w-4/5 lg:w-8/12 flex-col p-1 px-3 justify-evenly">
             <div className="artist text-sm overflow-hidden whitespace-nowrap truncate text-neutral-300">
-              {song?.currentSong?.artist}
+              {song?.currentSong?.artist ? song?.currentSong?.artist : "Artist"}
             </div>
-            <div className="title overflow-hidden whitespace-nowrap truncate">{song?.currentSong?.title}</div>
+            <div className="title overflow-hidden whitespace-nowrap truncate">
+              {song?.currentSong?.title ? song?.currentSong?.title : "title"}
+            </div>
           </div>
           <div className="action w-1/5 md:w-max flex items-center justify-center">
             <button
               className="flex items-center justify-center aspect-square rounded-full"
               onClick={favoriteUnfavorite}
-              name="favorite"
+              aria-label="favorite controller"
             >
               {isFavorite ? (
                 <FavoriteIcon className="mx-2 text-rose-600" />
