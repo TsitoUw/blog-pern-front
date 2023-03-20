@@ -1,3 +1,3 @@
-export const baseUrl = "https://musicc-back.vercel.app/api";
+export const baseUrl = "https://music-back.glitch.me/api/";
 
-export const publicUrl = "https://musicc-back.vercel.app/";
+export const publicUrl = "https://music-back.glitch.me/";
