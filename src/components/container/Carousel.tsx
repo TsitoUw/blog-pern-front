@@ -6,6 +6,8 @@ type Props = {
 }
 
 const Carousel = ({ children }: Props) => {
+  // still need to refactor this
+  // it came from a vanilla carousel that i've made a while back
   const naiv = () => {
     const carousel = document.querySelector('.carousel')!;
     const firstImg = carousel.querySelectorAll('img')[0];
