@@ -1,4 +1,4 @@
-import { SongAttributes } from "./Audio";
+import { SongAttributes } from "./Song";
 
 export default interface UserAttributes {
   id: string;

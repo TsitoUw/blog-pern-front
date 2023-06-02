@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, createContext } from "react";
-import { SongAttributes, SongMassive } from "../types/Audio";
+import { SongAttributes, SongMassive } from "../types/Song";
 
 export const SongContext = createContext<{
   currentSong:SongAttributes|SongMassive|null,

@@ -1,5 +1,7 @@
 import { lazy, startTransition } from "react";
 import { createBrowserRouter } from "react-router-dom";
+import SearchView from "../views/Search/SearchView";
+import User from "../views/User/User";
 
 const ProtectedRoute = lazy(() => import("../components/container/ProtectedRoute"));
 const HomeView = lazy(() => import("../views/Home/HomeView"));
@@ -26,48 +28,56 @@ export default createBrowserRouter([
   },
   {
     errorElement: <NotFound />,
-    path:"signup",
+    path: "signup",
     element: <ProtectedRoute reversed={true} />,
-    children:[
+    children: [
       {
-        index:true,
-        path:"",
-        element:<SignupView />
+        index: true,
+        path: "",
+        element: <SignupView />
       }
     ]
   },
   {
     errorElement: <NotFound />,
-    path:"signin",
+    path: "signin",
     element: <ProtectedRoute reversed={true} />,
-    children:[
+    children: [
       {
-        index:true,
-        path:"",
-        element:<SigninView />
+        index: true,
+        path: "",
+        element: <SigninView />
       }
     ]
   },
   {
-    path: "/",
+    path: "",
     errorElement: <NotFound />,
     element: <Layout />,
     children: [
       {
-        index:true,
-        path:"",
+        index: true,
+        path: "",
         element: <FeedsView />
       },
       {
-        path:"upload",
+        path: "search",
+        element: <SearchView />
+      },
+      {
+        path: "upload",
         element: <ProtectedRoute />,
         children: [
           {
-            index:true,
-            path:"",
+            index: true,
+            path: "",
             element: <UploadSongView />
           }
         ]
+      },
+      {
+        path: ":uid",
+        element: <User />,
       }
     ],
   },

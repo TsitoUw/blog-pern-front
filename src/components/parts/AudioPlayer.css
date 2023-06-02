@@ -1,7 +1,7 @@
 .volume-container .volume .input-container {
   margin: 10px;
   position: absolute;
-  bottom: 0;
+  bottom: 50;
   padding-bottom: 35px;
   display: none;
 }
@@ -23,6 +23,7 @@
 }
 
 .volume-container .volume:hover .input-container {
+  z-index: 99;
   display: flex;
 }
 /*******************************/

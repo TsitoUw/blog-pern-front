@@ -14,7 +14,7 @@ import RepeatOneIcon from "@mui/icons-material/RepeatOne";
 import defaultSongArtwork from "../../assets/default-artwork.png";
 
 import "./AudioPlayer.css";
-import { SongAttributes } from "../../types/Audio";
+import { SongAttributes } from "../../types/Song";
 import { SongStateContext } from "../../context/songStateContext";
 
 type Props = {
@@ -266,7 +266,7 @@ const AudioPlayer = ({ className }: Props) => {
         </div>
         <div className="volume-container hidden lg:flex w-10 relative  items-center justify-center">
           <div className="volume flex relative items-center justify-center">
-            <div className="input-container ">
+            <div className="input-container">
               <input
                 type="range"
                 name="volume-slider"

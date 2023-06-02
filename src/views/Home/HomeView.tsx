@@ -16,10 +16,22 @@ const HomeView = () => {
     <div className="relative">
       <NavBar />
 
-      <div className="hero | shadow-lg my-5 w-full bg-slate-900 min-h-[250px] flex flex-col lg:flex-row p-5 lg:px-32 h-full">
+      <div className="content | flex flex-col p-4">
+        <div className="flex flex-col items-center">
+          <div className="">
+            Start your journey with us, <span className="underline">upload</span> your songs follow your favorite artist save songs and so on by{" "}
+            <Link to="/signup" about="signup">
+              registering
+            </Link>{" "}
+            now.
+          </div>
+        </div>
+      </div>
+
+      <div className="hero | shadow-lg my-3 w-full bg-slate-900 min-h-[250px] flex flex-col lg:flex-row p-5 lg:px-32 h-full">
 
         <div className="texts | flex-[70%] flex flex-col items-center justify-center gap-2 lg:gap-7">
-          <div className="w-full text-4xl lg:text-6xl font-medium">It is <span className="underline underline-offset-4">just</span> something</div>
+          <div className="w-full text-4xl lg:text-6xl font-black italic uppercase">It is <span className="underline underline-offset-4">just</span> something</div>
           <div className="w-full flex text-neutral-300">
             Welcome to Musicc, discovers new artist, listen to your favorite song and so much more.
           </div>
@@ -37,17 +49,7 @@ const HomeView = () => {
         </div>
       </div>
 
-      <div className="content | flex flex-col p-4">
-        <div className="flex flex-col items-center">
-          <div className="">
-            Start your journey with us, <span className="underline">upload</span> your songs follow your favorite artist save songs and so on by{" "}
-            <Link to="/signup" about="signup">
-              registering
-            </Link>{" "}
-            now.
-          </div>
-        </div>
-      </div>
+      
     </div>
   );
 };

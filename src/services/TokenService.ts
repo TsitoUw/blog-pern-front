@@ -1,4 +1,4 @@
-import { SongAttributes } from "../types/Audio";
+import { SongAttributes } from "../types/Song";
 import { UserSessionAttributes } from "../types/User";
 
 class TokenService {

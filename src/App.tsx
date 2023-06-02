@@ -6,12 +6,11 @@ import UserAttributes from "./types/User";
 import tokenService from "./services/TokenService";
 import userService from "./services/user.service";
 import { SongContext } from "./context/songContext";
-import { SongAttributes, SongMassive } from "./types/Audio";
+import { SongAttributes, SongMassive } from "./types/Song";
 import { SongStateContext } from "./context/songStateContext";
 import Loader from "./components/parts/Loader";
 
 import routes from "./routes";
-import TokenService from "./services/TokenService";
 
 
 function App() {
@@ -41,8 +40,8 @@ function App() {
 
   useEffect(() => {
     getThisUser();
-    if (TokenService.getUser()) {
-      const user = TokenService.getUser();
+    if (tokenService.getUser()) {
+      const user = tokenService.getUser();
       if (user?.lastListenedSong) {
         setCurrentSong(user.lastListenedSong);
         setIsPlaying(false);
@@ -53,7 +52,7 @@ function App() {
   useEffect(() => {
     if (currentSong) {
       setLastListened(currentSong);
-      TokenService.updateLastListened(currentSong as SongAttributes);
+      tokenService.updateLastListened(currentSong as SongAttributes);
     }
   }, [currentSong]);
 
@@ -61,7 +60,7 @@ function App() {
   useEffect(() => {
     if (currentSong) {
       setLastListened(currentSong);
-      TokenService.updateLastListened(currentSong as SongAttributes);
+      tokenService.updateLastListened(currentSong as SongAttributes);
     }
   }, [currentSong]);
 
